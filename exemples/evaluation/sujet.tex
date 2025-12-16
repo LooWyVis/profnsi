@@ -1,0 +1,159 @@
+\documentclass[11pt]{exam}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+
+%remplacer eleve par prof si vous voulez la correction
+\usepackage[ds,eleve]{profnsi} 
+
+\profnsisetup{
+	niveau=Seconde,
+	matiere=SNT,
+	titre=Le Web,
+	chapitre=3
+}
+
+\begin{document}
+	
+	\creerDoc
+	
+	\remarque[Consignes]{Entoure une seule réponse par question. Soigne la rédaction pour les questions ouvertes.}
+	
+	
+	% ----------------------------------------------------
+	\partie{QCM}
+	% ----------------------------------------------------
+	
+	\begin{qcm}
+		
+		\begin{qcmquestion}{Quel élément distingue \textbf{le Web} d'Internet ?}
+			\begin{qcmchoices}
+				\qcmchoice{Internet est un navigateur.}
+				\qcmcorrectchoice{Le Web est un service d’Internet basé sur des pages liées entre elles.}
+				\qcmchoice{Le Web correspond au protocole TCP/IP.}
+				\qcmchoice{Internet ne contient que des sites Web.}
+			\end{qcmchoices}
+			\qcmsolution{Cours p.1 : Web = service utilisant hypertexte et HTTP/HTTPS.}
+		\end{qcmquestion}
+
+		\begin{qcmquestion}{Dans le modèle \textbf{client/serveur}, le navigateur joue le rôle :}
+			\begin{qcmchoices}
+				\qcmchoice{du serveur}
+				\qcmcorrectchoice{du client}
+				\qcmchoice{du routeur}
+				\qcmchoice{du moteur de recherche}
+			\end{qcmchoices}
+			\qcmsolution{Le client envoie des requêtes HTTP.}
+		\end{qcmquestion}
+		
+		\begin{qcmquestion}{Quel protocole est utilisé pour accéder à une page Web \textbf{sécurisée} ?}
+			\begin{qcmchoices}
+				\qcmchoice{HTTP}
+				\qcmcorrectchoice{HTTPS}
+				\qcmchoice{DNS}
+				\qcmchoice{TCP}
+			\end{qcmchoices}
+			\qcmsolution{HTTPS = version sécurisée de HTTP, données chiffrées.}
+		\end{qcmquestion}
+		
+		\begin{qcmquestion}{Quelle balise permet d’afficher un paragraphe en HTML ?}
+			\begin{qcmchoices}
+				\qcmchoice{<title>}
+				\qcmchoice{<h1>}
+				\qcmcorrectchoice{<p>}
+				\qcmchoice{<div>}
+			\end{qcmchoices}
+			\qcmsolution{<p> représente un paragraphe.}
+		\end{qcmquestion}
+		
+		\begin{qcmquestion}{Laquelle de ces écritures CSS colore le texte en bleu ?}
+			\begin{qcmchoices}
+				\qcmchoice{color-text: blue;}
+				\qcmcorrectchoice{color: blue;}
+				\qcmchoice{text-color: blue;}
+				\qcmchoice{background: blue-text;}
+			\end{qcmchoices}
+			\qcmsolution{Propriété correcte : \texttt{color}.}
+		\end{qcmquestion}
+		
+		\begin{qcmquestion}{Dans un fichier HTML, où place-t-on généralement le lien vers un fichier CSS ?}
+			\begin{qcmchoices}
+				\qcmchoice{Dans <body>}
+				\qcmcorrectchoice{Dans <head>}
+				\qcmchoice{À la fin du fichier}
+				\qcmchoice{Dans la balise <css>}
+			\end{qcmchoices}
+			\qcmsolution{<link> doit être dans <head>.}
+		\end{qcmquestion}
+		
+	\end{qcm}
+	
+	% ----------------------------------------------------
+	\partie{Questions ouvertes}
+	% ----------------------------------------------------
+	
+	\begin{qcm}
+		
+		\begin{qcmfreequestion}{Expliquer le fonctionnement d'un \textbf{moteur de recherche} (ici, on ne parle pas du web ni internet mais uniquement du moteur de recherche)}  
+			[Les moteurs de recherche indexent automatiquement les pages du Web et ils construisent ensuite un index des pages et classent les résultats selon la pertinence de la requête. C’est ce qu’on appelle page ranking.][5]
+		\end{qcmfreequestion}
+		
+		\begin{qcmfreequestion}{Les languauges HTML et CSS ont des rôles différents. Expliquer clairement la différence.}
+			[HTML décrit le contenu et la structure d’une page (titres, paragraphes, images…).  
+			CSS décrit la mise en forme : couleurs, polices, disposition, alignements.][4]
+		\end{qcmfreequestion}
+		
+		\begin{qcmfreequestion}{Donner deux bonnes pratiques pour sécuriser sa navigation Web.}
+			[Exemples : vérifier le HTTPS, gérer les cookies, ne pas cliquer sur des liens suspects, ...][4]
+		\end{qcmfreequestion}
+		
+		\begin{qcmfreequestion}{Décrire avec ses propres mots le modèle \textbf{client/serveur}. 		Donner un exemple concret issu du Web.}
+			[Le client (navigateur) envoie une requête HTTP à un serveur.  
+			Le serveur reçoit la requête, traite la demande et renvoie une réponse (page HTML, image, fichier…).  
+			Exemple : Chrome envoie une requête à \texttt{wikipedia.org} pour afficher une page ; le serveur renvoie le fichier HTML correspondant.][5]
+		\end{qcmfreequestion}
+		
+	\end{qcm}
+	
+	\newpage
+	% ----------------------------------------------------
+	\partie{Exercice pratique HTML/CSS}
+	% ----------------------------------------------------
+		\exercice{Compléter une page HTML simple}
+		
+		On vous donne le début d'une page HTML.  
+		Certaines lignes sont laissées \textbf{vides} avec une consignes sur la ligne précédente : complétez-les en suivant les consignes indiquées.
+		
+			
+		\begin{html}
+	<!DOCTYPE html>
+	<html>
+			<head>
+					<meta charset="UTF-8">
+					<!-- Ligne 6 : ajouter un titre pour cette page : "Ma page SNT" -->
+			
+			</head>
+			<body>
+					<!-- Ligne 10 : ajouter un titre niveau 1 affichant : Ma premiere page Web -->
+					
+					<!-- Ligne 12 : ajouter un paragraphe contenant : Ceci est un test en HTML. -->
+					
+					<!-- Ligne 14 : ajouter un lien vers wikipedia.org avec comme contenu "Wiki"-->
+					
+			</body>
+	</html>\end{html}
+		
+			
+			\exercice{Mise en page de la page}
+			
+			 À partir de la page que vous venez de compléter, proposez le code CSS qui permettrait modifier l’apparence de la page pour faire ces modifications:
+			
+			\begin{itemize}
+				\item Mettre le texte du titre en \textbf{rouge};
+				\item Mettre le paragraphe en police \textbf{Arial} ;
+				\item \textbf{Centrer} le texte du lien.
+			\end{itemize}
+			
+			
+	
+\end{document}

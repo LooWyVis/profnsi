@@ -1,0 +1,300 @@
+\documentclass[11pt]{exam}
+\usepackage[a4paper,margin={.1\paperheight,.1\paperwidth},marginratio=1:1]{geometry}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[table]{xcolor}
+
+\usepackage[exercices,eleve]{profnsi}
+\profnsisetup{
+	niveau=Terminale,
+	matiere=NSI,
+	titre=TD — Systèmes d’exploitation et gestion des processus,
+	chapitre=11
+}
+
+\begin{document}
+	\creerDoc
+	
+	\exercice{Retrouver la bonne commande}
+	
+	On se place dans un terminal Linux classique.
+	
+	\begin{enumerate}
+		\item Écrire la commande qui permet de :
+		\begin{enumerate}
+			\item afficher le chemin du répertoire courant ;
+			\item lister les fichiers du répertoire courant ;
+			\item créer un répertoire nommé \texttt{NSI} ;
+			\item supprimer le fichier \texttt{test.txt} ;
+			\item afficher le contenu du fichier \texttt{notes.txt}.
+		\end{enumerate}
+		
+		\item On se trouve dans le répertoire \texttt{/home/eleve}.  
+		Écrire la commande permettant de :
+		\begin{enumerate}
+			\item se déplacer dans le répertoire \texttt{/home/eleve/Documents} ;
+			\item revenir dans le répertoire parent ;
+			\item se déplacer dans le répertoire \texttt{/home/eleve/Téléchargements}.
+		\end{enumerate}
+	\end{enumerate}
+	
+	\correction{
+		\begin{enumerate}
+			\item
+			\begin{enumerate}
+				\item Afficher le chemin du répertoire courant : \texttt{pwd}
+				\item Lister les fichiers du répertoire courant : \texttt{ls} (ou \texttt{ls -l} pour la version détaillée)
+				\item Créer un répertoire nommé \texttt{NSI} : \texttt{mkdir NSI}
+				\item Supprimer le fichier \texttt{test.txt} : \texttt{rm test.txt}
+				\item Afficher le contenu du fichier \texttt{notes.txt} : \texttt{cat notes.txt}
+			\end{enumerate}
+			
+			\item Depuis \texttt{/home/eleve} :
+			\begin{enumerate}
+				\item Se déplacer dans \texttt{/home/eleve/Documents} :\\
+				\texttt{cd /home/eleve/Documents}
+				\item Revenir dans le répertoire parent (\texttt{/home}) :\\
+				\texttt{cd ..}
+				\item Se déplacer dans \texttt{/home/eleve/Téléchargements} :\\
+				\texttt{cd /home/eleve/Téléchargements}
+			\end{enumerate}
+		\end{enumerate}
+	}
+	
+	
+	\exercice{Lire un extrait de \texttt{ps}}
+	
+	On considère l’extrait simplifié suivant d’une commande \texttt{ps -ef} :
+	
+	\begin{center}
+		\begin{tabular}{|c|c|l|}
+			\hline
+			\textbf{PID} & \textbf{PPID} & \textbf{Commande} \\ \hline
+			1 & 0 & /sbin/init \\ \hline
+			245 & 1 & /usr/lib/systemd/systemd-logind \\ \hline
+			880 & 1 & /usr/sbin/NetworkManager \\ \hline
+			1320 & 1 & /usr/bin/gnome-shell \\ \hline
+			2045 & 1320 & /usr/bin/firefox \\ \hline
+			2101 & 1320 & /usr/bin/gimp \\ \hline
+			2300 & 2045 & /usr/lib/firefox/plugin-container \\ \hline
+		\end{tabular}
+	\end{center}
+	
+	\begin{enumerate}
+		\item Que signifient les colonnes \textbf{PID} et \textbf{PPID} ?
+		\item Quel est le \textbf{PID} du processus \texttt{firefox} ?
+		\item Quel processus a lancé \texttt{firefox} ? Justifier avec les PID/PPID.
+		\item Quels sont les \textbf{fils} du processus \texttt{gnome-shell} ?
+		\item Donner l’\textbf{ancêtre commun} de \texttt{firefox} et \texttt{gimp} parmi les processus du tableau.
+		\item Représenter sous forme d’\textbf{arbre} les relations père/fils des processus ci-dessus.
+	\end{enumerate}
+	
+	\correction{
+		\begin{enumerate}
+		\item \textbf{PID} : identifiant du processus (Process ID).  
+		\textbf{PPID} : identifiant du processus père (Parent Process ID).
+		\item Le PID de \texttt{firefox} est \textbf{2045}.
+		\item Le processus qui a lancé \texttt{firefox} est celui dont le PID vaut le PPID de \texttt{firefox}, donc le processus de PID \textbf{1320}, c’est-à-dire \texttt{/usr/bin/gnome-shell}.
+		\item Les fils de \texttt{gnome-shell} (PID 1320) sont les processus dont le PPID vaut 1320, donc :
+		\begin{itemize}
+			\item PID 2045 : \texttt{/usr/bin/firefox}
+			\item PID 2101 : \texttt{/usr/bin/gimp}
+		\end{itemize}
+		\item L’ancêtre commun de \texttt{firefox} et \texttt{gimp} dans ce tableau est \texttt{gnome-shell} (PID \textbf{1320}), qui est leur père direct. (On peut aussi remonter à \texttt{init} PID 1, mais \texttt{gnome-shell} est l’ancêtre commun le plus proche.)
+		\item L'arbre :
+		\end{enumerate}
+		
+		— 0\\
+		
+		\hspace{2cm}— 1 : /sbin/init\\
+		
+		\hspace{4cm}— 245 : systemd-logind\\
+		
+		\hspace{4cm}— 880 : NetworkManager\\
+		
+		\hspace{4cm}— 1320 : gnome-shell\\
+		
+		\hspace{6cm}— 2045 : firefox\\
+		
+		\hspace{8cm}— 2300 : plugin-container\\
+		
+		\hspace{6cm}— 2101 : gimp\\
+	}
+	
+	\exercice{FCFS / SJF}
+	
+	On considère les processus suivants, avec leur temps d’arrivée et leur durée d’exécution (en unités de temps CPU) :
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline 
+			Processus & Temps d'exécution & Temps d'arrivée \\ 
+			\hline 
+			A & 5 & 0 \\ 
+			\hline 
+			B & 2 & 1 \\ 
+			\hline 
+			C & 3 & 3 \\ 
+			\hline 
+			D & 4 & 5 \\ 
+			\hline 
+			E & 4 & 6 \\ 
+			\hline 
+		\end{tabular} 
+	\end{center}
+	
+	\begin{enumerate}
+		\item Compléter le tableau de temps CPU suivant pour représenter l’ordonnancement \textbf{FCFS}
+		\item Faites de même pour \textbf{SJF}
+		\item Faites de même pour \textbf{le tourniquet} avec des quantum de 1 puis 3
+		\item Comparer FCFS et SJF : dans quel cas le temps d’attente moyen vous semble-t-il le plus faible ? Pourquoi ?
+	\end{enumerate}
+	
+	\correction{
+		On rappelle les processus :
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline 
+				Processus & Temps d'exécution & Temps d'arrivée \\ 
+				\hline 
+				A & 5 & 0 \\ 
+				\hline 
+				B & 2 & 1 \\ 
+				\hline 
+				C & 3 & 3 \\ 
+				\hline 
+				D & 4 & 5 \\ 
+				\hline 
+				E & 4 & 6 \\ 
+				\hline 
+			\end{tabular} 
+		\end{center}
+		
+		\begin{enumerate}
+			\item \textbf{FCFS (First Come, First Served)}\\
+			On exécute chaque processus complètement dans l’ordre d’arrivée (en tenant compte des temps d’arrivée) :
+			\begin{itemize}
+				\item $t=0$ à $t=5$ : A (arrivé à 0)
+				\item $t=5$ à $t=7$ : B (arrivé à 1)
+				\item $t=7$ à $t=10$ : C (arrivé à 3)
+				\item $t=10$ à $t=14$ : D (arrivé à 5)
+				\item $t=14$ à $t=18$ : E (arrivé à 6)
+			\end{itemize}
+			Séquence CPU : \texttt{AAAAA BB CCC DDDD EEEE}
+			
+			\item \textbf{SJF (Shortest Job First) non préemptif}\\
+			À chaque fois que le processeur est libre, on choisit le processus disponible de plus courte durée.
+			Avec ces données, l’ordre obtenu est en fait le même que pour FCFS :
+			\begin{itemize}
+				\item A puis B puis C puis D puis E
+			\end{itemize}
+			Séquence CPU : \texttt{AAAAA BB CCC DDDD EEEE}
+			
+			(Dans d’autres jeux de données, SJF et FCFS peuvent produire des ordres très différents.)
+			
+			\item \textbf{Tourniquet (Round Robin)} avec quantum = 1 puis 3.  
+			On suppose un ordonnancement préemptif, en respectant les temps d’arrivée.
+			
+			\begin{itemize}
+				\item \textbf{Quantum = 1} (unité de temps) :
+				
+				Séquence possible (par unités de temps) :\\
+				\texttt{A B A B C A D C E A D C E A D E D E}\\
+				(on voit bien l’alternance très fréquente entre processus)
+				
+				\item \textbf{Quantum = 3} :
+				
+				Séquence possible :\\
+				\texttt{A A A B B C C C A A D D D E E E D E}\\
+				(le processeur reste plus longtemps sur le même processus avant de passer au suivant)
+			\end{itemize}
+			
+			\item \textbf{Comparaison FCFS / SJF}\\
+			Ici, FCFS et SJF donnent la même séquence, donc le temps d’attente moyen est identique.  
+			En général :
+			\begin{itemize}
+				\item SJF tend à diminuer le temps d’attente moyen,
+				\item mais il peut pénaliser les processus longs (famine possible),
+				\item alors que FCFS est plus simple mais peut laisser de très longs processus bloquer les autres.
+			\end{itemize}
+		\end{enumerate}
+	}
+	
+	
+	%------------------------------------------------------------
+	\exercice{Dîner des philosophes}
+	
+	On rappelle le principe du problème des \textbf{philosophes} :
+	
+	\begin{itemize}
+		\item cinq philosophes sont assis autour d’une table ;
+		\item entre chaque philosophe se trouve une fourchette ;
+		\item pour manger, un philosophe a besoin de deux fourchettes (gauche et droite) ;
+		\item chaque philosophe alterne entre réfléchir et essayer de manger.
+	\end{itemize}
+	
+	\begin{enumerate}
+		\item Expliquer comment une situation d’interblocage peut apparaître dans ce problème.
+		\item Proposer une règle simple pour réduire le risque d’interblocage (par exemple en changeant la façon de prendre les fourchettes).
+		\item Dans la vraie vie informatique, donner un exemple de situation qui ressemble au problème des philosophes.
+	\end{enumerate}
+	
+	
+	\correction{
+		\begin{enumerate}
+			\item \textbf{Interblocage possible} :  
+			Si tous les philosophes prennent d’abord la fourchette de gauche, puis attendent la fourchette de droite, on peut se retrouver dans la situation suivante :
+			\begin{itemize}
+				\item chaque philosophe détient une fourchette ;
+				\item chacun attend la seconde (à droite), qui est déjà tenue par son voisin ;
+				\item personne ne peut avancer, tout le monde est bloqué : il y a interblocage.
+			\end{itemize}
+			
+			\item \textbf{Règle simple pour réduire le risque} (plusieurs réponses possibles) :
+			\begin{itemize}
+				\item imposer à un philosophe de prendre d’abord la fourchette droite, les autres prenant d’abord celle de gauche (on casse la symétrie) ;
+				\item limiter le nombre de philosophes autorisés à prendre des fourchettes simultanément (par exemple au plus 4 sur 5) ;
+				\item imposer un ordre global sur les fourchettes et les prendre toujours dans le même ordre.
+			\end{itemize}
+			
+			\item \textbf{Exemple réel} :
+			\begin{itemize}
+				\item Deux programmes qui verrouillent chacun un fichier différent puis essaient de verrouiller le fichier de l’autre ;
+				\item Deux transactions de base de données qui verrouillent des tables dans un ordre incompatible ;
+				\item Deux processus qui détiennent chacun une ressource matérielle (imprimante, scanner) et attendent l’autre.
+			\end{itemize}
+		\end{enumerate}
+	}
+	
+	\exercice{Implémentation python}
+	
+	Écrire le programme python qui gère l'ordonnancement du tourniquet en affichant tour à tour les processus qui ont accès au CPU. Les informations des processus est contenu dans un dictionnaire tel que :
+	
+	\begin{python}
+P = {
+	"A" : {
+		"t_exec" : 5,
+		"t_arrivee" : 0,
+	},
+	"B" : {
+		"t_exec" : 2,
+		"t_arrivee" : 1,
+	},
+	"C" : {
+		"t_exec" : 3,
+		"t_arrivee" : 3,
+	},
+	"D" : {
+		"t_exec" : 4,
+		"t_arrivee" : 5,
+	},
+	"E" : {
+		"t_exec" : 4,
+		"t_arrivee" : 6,
+	}
+}\end{python}
+
+
+
+\end{document}

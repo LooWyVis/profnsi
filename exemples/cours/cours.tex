@@ -1,0 +1,761 @@
+\documentclass[11pt]{exam}
+
+\usepackage[a4paper,margin={.1\paperheight,.1\paperwidth},marginratio=1:1]{geometry}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+
+\usepackage[cours,eleve]{profnsi}
+\profnsisetup{
+	niveau=Première,
+	matiere=NSI,
+	titre=Types construits,
+	chapitre=4
+}
+
+\begin{document}
+	\creerDoc
+	
+	\partie{Introduction}
+	
+	En Python, on dispose de \textbf{types de base} comme :
+	\begin{itemize}
+		\item les entiers (\textbf{int}) ;
+		\item les nombres flottants (\textbf{float}) ;
+		\item les valeurs booléennes (\textbf{bool}) ;
+		\item les chaînes de caractères (\textbf{str}).
+	\end{itemize}
+	
+	Ces types permettent de représenter des valeurs simples : un nombre, un mot, une valeur logique, etc.
+	Cependant, dans la plupart des problèmes, les informations ne se présentent pas isolées mais
+	\textbf{regroupées} : liste d'élèves, coordonnées d'un point, données d’un capteur, notes d’un devoir,
+	informations sur un utilisateur…
+	
+	\medskip
+	
+	C’est pourquoi Python (comme tous les langages) permet de créer des \textbf{types construits} : des
+	objets capables de contenir \textbf{plusieurs valeurs}, organisées de façon cohérente.
+	
+	\medskip
+	
+	\textbf{Intérêts des types construits :}
+	\begin{itemize}
+		\item \textbf{Regrouper des données liées} : les coordonnées d’un point $(x,y)$, les informations d’un élève, les mesures d’une expérience.
+		\item \textbf{Faciliter les traitements} : parcourir une liste de notes, trier, chercher, compter…
+		\item \textbf{Rendre les programmes plus lisibles} : une structure bien choisie rend le code plus simple et plus clair.
+		\item \textbf{Représenter des données complexes} du monde réel : tables de données, matrices, enregistrements, etc.
+	\end{itemize}
+	
+	\medskip
+	
+	Dans ce chapitre, nous étudions trois types construits essentiels :
+	\begin{itemize}
+		\item les \textbf{p-uplets} (ou \textit{tuples}) → regrouper des valeurs non modifiables ;
+		\item les \textbf{listes} → stocker des éléments modifiables et itérables ;
+		\item les \textbf{dictionnaires} → associer des \textit{clés} et des \textit{valeurs}.
+	\end{itemize}
+	
+	Ils permettent de manipuler efficacement des données structurées, indispensables dans toute application informatique. Chacun de ces types a ses utilités et spécificités, il faut donc choisir correctement le type utilisé selon le problème qui nous est posé.
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\partie{Les p-uplets (tuples)}
+	
+	Un \textbf{p-uplet} (ou \textbf{tuple} en Python) est un ensemble ordonné de valeurs, placées les unes à la
+	suite des autres.  Le terme de \textbf{p-uplet} vient du fait que selon le nombre de valeurs qu'il contient, son nom peut être plus précis : \texttt{doublet, triplet, etc}.
+	
+	Un tuple peut contenir des valeurs :
+	\begin{itemize}
+		\item de n'importe quel type ;
+		\item possiblement toutes différentes (entier, chaîne, booléen…).
+	\end{itemize}
+	
+	\souspartie{Créer un tuple}
+	
+	Créer un \textbf{tuple} revient à lister l'ensemble des valeurs que l'on veut stocker entre \textbf{parenthèses}, séparées par des \textbf{virgules}.
+	
+	\begin{python}
+		t = (12, "NSI", True, 3.14)\end{python}
+	
+	Une spécificité du tuple est que c'est un type \textbf{non mutable}, cela veut dire qu'une fois créé, on ne peut pas le modifier. On peut cependant en créer un nouveau par dessus ou en créer plusieurs.
+	
+	\begin{python}
+		t = (1, 2, 3)
+		t2 = (3, 6, 7)   # creation d'un nouveau tuple
+		t2 = (2, 2, 4)   # creation d'un nouveau tuple en ecrasant l'ancien
+		print(t2)	# (2, 2, 4)\end{python}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\souspartie{Indices et valeurs}
+	
+	Les éléments d'un tuple sont identifiables grâce à leur \texttt{position} dans le tuple, cette \texttt{position} est appelée \textbf{indice}, chaque élément possède donc une \textbf{valeur} et un \textbf{indice}. 
+	
+	\medskip
+	
+	Voici un exemple de tuple et la représentation de ses valeurs et indices :
+	
+	
+	\begin{python}
+		t = (17, 42, "NSI", True)\end{python}
+	
+	
+	\begin{center}
+		\begin{tikzpicture}[
+			cell/.style={rectangle,draw,minimum width=1.2cm,minimum height=1.2cm,align=center},
+			>=Stealth
+			]
+			
+			% Libellés à gauche
+			\node[anchor=east] at (-1,0) {valeurs :};
+			\node[anchor=east] at (-1,-1.4) {indices :};
+			
+			% Cases (collées)
+			\node[cell] (c0) at (0,0) {17};
+			\node[cell] (c1) [right=0pt of c0] {42};
+			\node[cell] (c2) [right=0pt of c1] {"NSI"};
+			\node[cell] (c3) [right=0pt of c2] {True};
+			
+			% Indices (collés de même largeur)
+			\node (i0) at (0,-2) {0};
+			\node (i1) at (1.22,-2) {1};
+			\node (i2) at (2.465,-2) {2};
+			\node (i3) at (3.715,-2) {3};
+			
+			% Flèches des indices vers les cases
+			\draw[->] (i0.north) -- (c0.south);
+			\draw[->] (i1.north) -- (c1.south);
+			\draw[->] (i2.north) -- (c2.south);
+			\draw[->] (i3.north) -- (c3.south);
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	
+	\remarque{Comme souvent en informatique, on commence à compter les indices à partir de \textbf{0}.}
+	
+	\remarque[Attention]{On distingue l'\textbf{indice} (la position) et la \textbf{valeur} (le contenu).}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\souspartie{Accéder aux valeurs}
+	
+	C'est cette notion d'indice qui va nous permettre d'accéder aux valeurs d'un tuple. Par exemple, pour un tuple \texttt{t}, si je veux accéder à la valeur de l'indice \texttt{i} nous suffit d'utiliser cette syntaxe :
+	
+	\begin{center}
+		\texttt{t[i]}
+	\end{center}
+	
+	\application{
+		Créer un tuple \texttt{identite} contenant deux valeurs : votre prénom et votre nom. Récupérer le prénom contenu dans le tuple dans une variable \texttt{prenom}, faites pareil pour le nom dans une variable \texttt{nom} puis imprimer ces deux variables.
+	}{5}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\souspartie{Parcourir un tuple}
+	
+	Il est très fréquent de vouloir traiter successivement tous les éléments d’un tuple : afficher
+	chaque valeur, effectuer un calcul, rechercher un élément, etc.  
+	Python propose deux manières principales de parcourir un tuple :
+	
+	\begin{itemize}
+		\item le \textbf{parcours par valeurs} : on récupère directement chaque élément du tuple ;
+		\item le \textbf{parcours par indices} : on parcourt les positions (indices) et on accède aux valeurs via \texttt{t[i]}.
+	\end{itemize}
+	
+	Les deux méthodes sont correctes, mais la première est plus simple et plus lisible lorsque l’indice n’est pas nécessaire.
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\subsubsection*{Parcours par valeurs}
+	
+	Dans ce type de parcours, la variable de boucle prend successivement la \textbf{valeur de chaque élément} du tuple.
+	
+	\begin{python}
+		t = ("a", "b", "c")
+		for element in t:
+			print(element)\end{python}
+	
+	Voici le déroulement de la boucle :
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\textbf{Iteration} & \textbf{Valeur de \texttt{element}} & \textbf{Affichage}\\
+			\hline
+			1 & "a" & a \\
+			\hline
+			2 & "b" & b \\
+			\hline
+			3 & "c" & c \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	À chaque tour, \texttt{element} contient directement la valeur stockée dans le tuple.
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\subsubsection*{Parcours par indices}
+	
+	Dans ce parcours, on utilise les positions du tuple.  
+	La boucle va donc faire varier l’indice \texttt{i}, et on accède à la valeur via \texttt{t[i]}.
+	
+	\begin{python}
+		t = ("a", "b", "c")
+		for i in range(len(t)):
+			print(i, "->", t[i])\end{python}
+	
+	Déroulement détaillé :
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textbf{Iteration} & \textbf{Valeur de \texttt{i}} & \textbf{Valeur de \texttt{t[i]}} & \textbf{Affichage}\\
+			\hline
+			1 & 0 & "a" & a \\
+			\hline
+			2 & 1 & "b" & b \\
+			\hline
+			3 & 2 & "c" & c \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	\remarque{Ici, \texttt{len(t)} récupère la longueur de \texttt{t}. Cela permet de savoir directement combien d'éléments sont dans le tuple, pour que la boucle fasse le bon nombre d'itération.}
+	
+	Ce parcours est utile lorsqu’on a besoin :
+	\begin{itemize}
+		\item d’utiliser l’indice (ex : position d’un élément) ;
+		\item d’accéder simultanément à plusieurs éléments à partir de leurs indices ;
+		\item d’effectuer certains calculs dépendant de la position.
+	\end{itemize}
+	
+	\application{
+		Nous allons utiliser le tuple \texttt{t=(2, 4, 7, 3, 0, 7, 3)}, parcourez ce tuple par element et affichez \texttt{"trouvé"} dès que vous parcourez un élément valant \textbf{0}. Parcourez ensuite ce même tuple pour afficher \texttt{l'indice} actuel dès que vous trouvez un élément valant \textbf{3}.
+	}{7}
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\souspartie{Utilisations particulières}
+	
+	En plus d'accéder à des valeurs, plusieurs manipulations sont possibles sur des tuples, en-voici une liste non-exhaustive :
+	
+	\begin{itemize}
+		\item Il est possible de \texttt{concaténer} deux tuples
+	\end{itemize}
+	
+	\begin{python}
+		t = (4, 2, 4) + ("NSI", 4)	# t vaudra (4, 2, 4, "NSI", 4)\end{python}
+	
+	\begin{itemize}
+		\item Il est possible de faire une \texttt{multi-affectation} à partir d'un tuple, pour récupérer ses valeurs
+	\end{itemize}
+	
+	\begin{python}
+		t = (4, 2, 4, 9)
+		a, b, c, d = t	# a = 4, b = 2, c = 4, d = 9\end{python}
+	
+	\begin{itemize}
+		\item Une fonction qui renvoie plusieurs valeurs le fait sous forme de tuple
+	\end{itemize}
+	
+	\begin{python}
+		return 45, 12	# cela retourne le tuple (45, 12)\end{python}
+		
+		
+		\remarque{
+			Un tuple peut également être créer grâce à des variables, pas seulement des valeurs directement.\\
+			Exemple :\\
+			\texttt{variable1 = 12}\\
+			\texttt{variable2 = "NSI"}\\
+			\texttt{t = (variable1, variable2)}
+		}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\partie{Les listes (ou tableaux)}
+	
+	Les listes sont similaires aux tuples, à quelques différences près :
+	
+	\begin{itemize}
+		\item C'est un type mutable : on peut modifier une liste après l'avoir créée :
+		\item La syntaxe est différente : on utilise des crochets \texttt{[]}.
+	\end{itemize}
+	
+	\subsection*{Création, accès et modification}
+	
+	\begin{python}
+		notes = [12, 15, 9] # On cree une liste de notes
+		notes[1] = 18 # On modifie la deuxieme note de la liste, contenue a l'indice 1
+		moins_bonne_note = notes[2] # On recupere la moins bonne note
+		print(notes)  # On affiche toutes les notes : [12, 18, 9]\end{python}
+		
+	Comme pour un tuple, on peut parcourir une liste à l'aide d'une boucle.
+		
+	\remarque{Une liste peut être vide, par exemple : \texttt{l = []} fait de \texttt{l} une liste vide.}
+		
+		\souspartie{Performances}
+		
+		\subsection*{Quel intérêt d'avoir deux types différents ?}
+		
+		Avoir à la fois des listes et des tuples en Python répond à un vrai besoin de conception : les listes, parce qu’elles sont \textbf{mutables}, sont idéales pour représenter des collections qui doivent \textbf{évoluer} dans le temps, mais cette mutabilité implique un \textbf{coût en performance}, en \textbf{mémoire}, et une incertitude sur l’\textbf{intégrité} des données (elles peuvent être modifiées par erreur). Les tuples, eux, offrent une alternative \textbf{légère}, plus \textbf{rapide} et \textbf{sûre}, parfaite pour représenter des données fixes.
+		
+		
+		\souspartie{Utilisations particulières}
+		
+		Comme pour les tuples, diverses opérations sont possibles sur les listes, comme la concaténation et la multi-affectation pour récupérer les valeurs. Mais la vraie plus-value d'une liste vient de sa mutabilité. Il existe donc un ensemble de fonctions (appelées méthodes) pour les manipuler :
+		
+		Chacune de ces méthodes suivantes est à utiliser à l'aide de la syntaxe suivante :
+		
+		\begin{center}
+			\texttt{liste.methode(paramètre1, paramètre2, ...)}
+		\end{center}
+	
+		\subsection*{Méthodes essentielles}
+		
+		\begin{itemize}
+			\item \texttt{append(x)} : ajoute un élément \texttt{x} en fin de liste;
+			\item \texttt{insert(i,x)} : insère l'élément \texttt{x} à l’indice \texttt{i};
+			\item \texttt{pop(i)} : retire l'élément à l’indice \texttt{i} et le renvoie. Par exemple : \texttt{var = liste.pop(8)} permet de récupérer le 9eme élément de la liste dans \texttt{var};
+			\item \texttt{remove(x)} : retire le premier élément qui a pour valeur \texttt{x} de la liste.
+		\end{itemize}
+		
+		\application{
+			\begin{itemize}
+				\item Créer une liste avec la chaîne de caractères "NSI";
+				\item Ajouter deux chaînes de caractères correspondant à tes deux autres spécialités;
+				\item Récupérer la valeur de l'élément à l'indice 2 dans la variable \texttt{spe};
+				\item Supprimer l'élément "NSI" de ta liste.
+			\end{itemize}
+		}{5}
+		
+		\souspartie{Créer une liste par compréhension}
+		
+		Python permet de créer des listes de manière concise grâce aux \textbf{listes en compréhension}
+		(\textit{list comprehensions}).  
+		C’est une façon compacte d’écrire une boucle qui construit une liste.
+		
+		La forme générale est :
+		
+		\begin{center}
+			\text{[expression for variable in sequence]}
+		\end{center}
+		
+		Cette expression signifie :  
+		\textit{« Pour chaque valeur de la séquence, calculer l’expression et l’ajouter dans une nouvelle liste. »}
+		
+		\medskip
+		
+		\subsubsection*{Exemple simple : carrés des nombres de 0 à 5}
+		
+		\begin{python}
+		l = [x*x for x in range(6)]\end{python}
+		
+		Déroulement de la compréhension :
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				\textbf{Iteration} & \textbf{Valeur de x} & \textbf{Expression x*x} \\
+				\hline
+				1 & 0 & 0 \\
+				\hline
+				2 & 1 & 1 \\
+				\hline
+				3 & 2 & 4 \\
+				\hline
+				4 & 3 & 9 \\
+				\hline
+				5 & 4 & 16 \\
+				\hline
+				6 & 5 & 25 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		Ainsi, la liste obtenue est :
+		
+		\begin{center}
+			\texttt{[0, 1, 4, 9, 16, 25]}
+		\end{center}
+		
+		\medskip
+		
+		\remarque{Les listes en compréhension sont particulièrement pratiques pour construire rapidement des listes numériques mais cela reste une méthode plus compliquée à utiliser qu'a comprendre.}
+		
+		
+		\souspartie{Listes de listes}
+		
+		Comme une liste peut contenir des éléments de n’importe quel type, elle peut aussi contenir
+		d’autres listes.  
+		On parle alors de \textbf{liste à deux dimensions} (comme un tableau à deux entrées).  
+		C’est un moyen simple de représenter un tableau, une grille, une matrice (tableau de nombres en mathématiques), etc.
+		
+		\medskip
+		
+		\subsubsection*{Exemple de création d'une liste de listes}
+		
+		\begin{python}
+		mat = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\end{python}
+		
+		\bigskip
+		
+		Visuellement :
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				1 & 2 & 3 \\
+				\hline
+				4 & 5 & 6 \\
+				\hline
+				7 & 8 & 9 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		Chaque ligne est une liste, et l’ensemble de ces lignes forme une autre liste.
+		
+		\medskip
+		
+		\subsubsection*{Accéder à une valeur}
+		
+		L’accès se fait à l’aide de deux indices :
+		
+		\begin{itemize}
+			\item le premier indice : choisit la ligne ;
+			\item le second indice : choisit la colonne dans cette ligne.
+		\end{itemize}
+		
+		\begin{python}
+			print(mat[0][1])  # 2
+			print(mat[2][0])  # 7\end{python}
+			
+		\bigskip
+		
+		Déroulement de l’accès \texttt{mat[0][1]} :
+		
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				\textbf{Expression} & \textbf{Résultat} \\
+				\hline
+				mat[0] & [1, 2, 3] \\
+				\hline
+				mat[0][1] & 2 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\medskip
+		
+		\application{
+			Afficher la somme des valeurs des coins du tableau ci-dessus à l'aide de la liste de listes python qui le représente.
+		}{2}
+		
+		\medskip
+		
+		\remarque{Rien n’empêche de créer des listes à plus de deux dimensions :  
+			\texttt{mat[ligne][colonne][profondeur]} et ainsi de suite. \\
+			On peut donc imaginer des structures à 3D, 4D, etc.
+		}
+		
+		\subsubsection*{Parcourir une liste à deux dimensions}
+		
+		Pour traiter toutes les valeurs d’une liste de listes, on utilise généralement deux boucles
+		imbriquées :
+		
+		\begin{itemize}
+			\item la première parcourt les \textbf{lignes} ;
+			\item la seconde parcourt les \textbf{colonnes} d’une ligne.
+		\end{itemize}
+		
+		\begin{python}
+		mat = [[1, 2, 3], [4, 5, 6],[7, 8, 9]]
+			
+		for ligne in mat:
+			for valeur in ligne:
+				print(valeur)\end{python}
+		
+		Dans ce parcours :
+		
+		\begin{itemize}
+			\item la variable \texttt{ligne} prend successivement chaque liste interne ;
+			\item la variable \texttt{valeur} prend chacun des éléments de cette ligne.
+		\end{itemize}
+		
+		\subsubsection*{Déroulement du parcours}
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				\textbf{Iteration} & \textbf{Valeur de \texttt{ligne}} & \textbf{Valeur de \texttt{valeur}} \\
+				\hline
+				1 & [1, 2, 3] & 1 \\
+				\hline
+				2 & [1, 2, 3] & 2 \\
+				\hline
+				3 & [1, 2, 3] & 3 \\
+				\hline
+				4 & [4, 5, 6] & 4 \\
+				\hline
+				5 & [4, 5, 6] & 5 \\
+				\hline
+				6 & [4, 5, 6] & 6 \\
+				\hline
+				7 & [7, 8, 9] & 7 \\
+				\hline
+				8 & [7, 8, 9] & 8 \\
+				\hline
+				9 & [7, 8, 9] & 9 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\medskip
+		
+		\subsubsection*{Parcours par indices}
+		
+		On peut aussi parcourir une liste de listes à l’aide des indices :
+		
+		\begin{python}
+		for i in range(len(mat)):	# indice de ligne
+			for j in range(len(mat[i])):	# indice de colonne
+				print(mat[i][j])\end{python}
+		
+		Déroulement simplifié :
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				\textbf{Iteration} & \textbf{i} & \textbf{j} \\
+				\hline
+				1 & 0 & 0 \\
+				\hline
+				2 & 0 & 1 \\
+				\hline
+				3 & 0 & 2 \\
+				\hline
+				4 & 1 & 0 \\
+				\hline
+				5 & 1 & 1 \\
+				\hline
+				6 & 1 & 2 \\
+				\hline
+				7 & 2 & 0 \\
+				\hline
+				8 & 2 & 1 \\
+				\hline
+				9 & 2 & 2 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\medskip
+		
+		Dans ce cas, les valeurs sont récupérées via \texttt{mat[i][j]}.  
+		Ce type de parcours est utile lorsque l’on a besoin explicitement des indices.
+		
+		\application{
+			On considère le tableau suivant représentant des températures mesurées sur trois jours
+			(et quatre moments de la journée) :
+			\begin{center}
+				\begin{tabular}{|c|c|c|c|c|}
+					\hline
+					& Matin & Midi & 16h & Soir \\
+					\hline
+					Jour 1 & 12 & 18 & 20 & 15 \\
+					\hline
+					Jour 2 & 10 & 17 & 22 & 14 \\
+					\hline
+					Jour 3 & 11 & 16 & 21 & 13 \\
+					\hline
+				\end{tabular}
+			\end{center}
+			\begin{enumerate}
+				\item Reproduire ce tableau sous forme d'une liste de listes Python appelée \texttt{temp}.
+				\item Afficher toutes les valeurs au moyen d’un \textbf{parcours par valeurs}
+				\item Afficher toutes les valeurs en affichant également leur position, au moyen d’un \textbf{parcours par indices}
+				\item Trouver et afficher la \textbf{température la plus élevée} du tableau.
+			\end{enumerate}
+		}{20}
+		
+		
+	\souspartie{Autres méthodes pour les listes}
+	
+	Il existe un certain nombre de méthodes et de fonctions permettant d’effectuer des
+	traitements courants sur les listes.  
+	Ces outils évitent d’écrire des boucles complexes et rendent le code plus lisible.
+	
+	\medskip
+	
+	\subsubsection*{Trier une liste : \texttt{sort}}
+	
+	La méthode \texttt{sort()} permet de trier une liste (par ordre croissant par défaut).
+	
+	\begin{python}
+	L = [5, 2, 9, 1]
+	L.sort()
+	print(L)   # [1, 2, 5, 9]\end{python}
+	
+	\remarque{La liste est directement modifiée.}
+	
+	\subsubsection*{Minimum et maximum : \texttt{min} et \texttt{max}}
+	
+	Les fonctions \texttt{min()} et\texttt{max()} permettent
+	de récupérer la plus petite et la plus grande valeur d’une liste.
+	
+	\begin{python}
+	L = [5, 2, 9, 1]
+	print(min(L))  # 1
+	print(max(L))  # 9\end{python}
+	
+	\subsubsection*{Inverser une liste : \texttt{reverse}}
+	
+	La méthode \texttt{reverse()} inverse l’ordre des éléments de la liste,
+	là aussi \textbf{sur place}.
+	
+	\begin{python}
+	L = [1, 2, 3, 4]
+	L.reverse()
+	print(L)   # [4, 3, 2, 1]\end{python}
+	
+	\subsubsection*{Extraire une partie d’une liste : le slicing}
+	
+	Le \textbf{slicing} permet d’extraire une sous-liste à partir d’une liste existante,
+	sans la modifier.
+	
+	La syntaxe générale est :
+	
+	\begin{center}
+		\texttt{liste[début:fin]}
+	\end{center}
+	
+	\begin{itemize}
+		\item \texttt{début} est inclus ;
+		\item \texttt{fin} est exclu.
+	\end{itemize}
+	
+	\begin{python}
+	L = [10, 20, 30, 40, 50]
+	print(L[1:4])   # [20, 30, 40]\end{python}
+	
+	Exemples courants :
+	
+	\begin{python}
+	print(L[:3])    # [10, 20, 30]  (du debut a l indice 2)
+	print(L[2:])    # [30, 40, 50]  (de l indice 2 a la fin)\end{python}
+	
+	\remarque{Le slicing cree toujours une nouvelle liste, sans modifier celle utilisée.}
+	
+	\medskip
+	
+	\subsubsection*{Copier une liste : \texttt{copy}}
+	
+	La méthode \texttt{copy()} permet de créer une \textbf{nouvelle liste}
+	contenant les mêmes valeurs.
+	
+	\begin{python}
+	L1 = [1, 2, 3]
+	L2 = L1.copy()
+	
+	print(L1)  # [1, 2, 3]
+	print(L2)  # [1, 2, 3]\end{python}
+	
+	\bigskip
+	
+	\textbf{Quel est l'intérêt du copy ?}
+	
+	\medskip
+	
+	Sans utiliser la méthode \texttt{copy()}, deux variables contenant deux listes peuvent faire référence à la \textbf{même liste} :
+	
+	\begin{python}
+	L1 = [1, 2, 3]
+	L2 = L1
+	L2.append(4)
+	
+	print(L1)  # [1, 2, 3, 4]\end{python}
+	
+	\medskip
+	
+	Dans ce cas, modifier \texttt{L2} modifie aussi \texttt{L1}.  
+	La méthode \texttt{copy()} permet d’éviter ce problème en travaillant
+	sur une vraie copie indépendante :
+	
+		\begin{python}
+		L1 = [1, 2, 3]
+		L2 = L1.copy()
+		L2.append(4)
+		
+		print(L1)  # [1, 2, 3]
+		print(L2)  # [1, 2, 3, 4]\end{python}
+		
+		\application{
+			On dispose de la liste suivante représentant des scores obtenus par des joueurs :\\
+			\texttt{scores = [18, 7, 12, 15, 9, 20, 14]}
+			\begin{enumerate}
+				\item Creer une \textbf{copie} de la liste \texttt{scores} appelee \texttt{scores\_copie}.
+				\item Trier la liste \texttt{scores\_copie} par ordre croissant.
+				\item Afficher la plus petite et la plus grande valeur de \texttt{scores\_copie}.
+				\item Inverser l ordre des elements de \texttt{scores\_copie}.
+				\item Extraire dans une nouvelle liste :
+				\begin{itemize}
+					\item les trois premieres valeurs ;
+					\item les trois dernieres valeurs.
+				\end{itemize}
+			\end{enumerate}
+		}{7}
+		
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\partie{Les dictionnaires}
+	
+	Un \textbf{dictionnaire} associe une \textbf{clé} à une \textbf{valeur}.  
+	On utilise des accolades \texttt{\{\}}.
+	
+	\begin{python}
+		eleve = {
+			"nom": "Durand",
+			"age": 16,
+			"note": 15
+		}
+	\end{python}
+	
+	\subsection*{Accès et modification}
+	
+	\begin{python}
+		print(eleve["nom"])    # Durand
+		eleve["note"] = 17     # modification
+		eleve["ville"] = "Lyon" # ajout
+	\end{python}
+	
+	\subsection*{Méthodes clés}
+	
+	\begin{itemize}
+		\item \texttt{keys()} : renvoie les clés  
+		\item \texttt{values()} : renvoie les valeurs  
+		\item \texttt{items()} : renvoie couples (clé,valeur)
+	\end{itemize}
+	
+	\begin{python}
+		for cle,val in eleve.items():
+		print(cle, "->", val)\end{python}
+	
+	\subsection*{Schéma}
+	
+	\tableau{Clé|nom|age|note}{Valeur|Durand|16|17}
+	
+	\remarque{Les clés doivent être immuables (str, int, tuple…).}
+	
+	\application{Créer un dictionnaire représentant une image EXIF minimal : largeur, hauteur, format. Afficher chaque clé suivie de sa valeur.}{6}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\partie{Synthèse}
+	
+	\tableau{Type|Mutable ?|Notation|Exemple}{
+		Tuple|Non|()|(1,2,"a") ;
+		Liste|Oui|[]|[1,2,3] ;
+		Dictionnaire|Oui|{}|{"nom":"Ana"}
+	}
+	
+	
+\end{document}
