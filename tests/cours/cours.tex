@@ -1,0 +1,259 @@
+\documentclass[11pt]{exam}
+\usepackage[a4paper,margin={.1\paperheight,.1\paperwidth},marginratio=1:1]{geometry}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+
+% Choix des options et des infos d’en-tête
+\usepackage[cours,prof]{profnsi}
+\profnsisetup{
+	niveau=Première,
+	matiere=NSI,
+	titre=Représentation des données,
+	chapitre=3
+}
+
+
+\begin{document}
+	\creerDoc
+	
+	\partie{Introduction : Pourquoi représenter les données ?}
+	
+	\souspartie{Intérêt}
+	
+	Les ordinateurs ne manipulent pas directement des nombres, des textes ou des images comme nous les percevons : ils ne savent traiter que des \textbf{états physiques} simples.  
+	Concrètement, dans la plupart des circuits électroniques, un transistor peut être dans deux états distincts :
+	
+	\begin{itemize}
+		\item un courant passe (\textbf{état haut}) ;
+		\item aucun courant ne passe (\textbf{état bas}).
+	\end{itemize}
+	
+	Ces deux états sont naturellement représentés par deux symboles : \(0\) et \(1\).  
+	Ainsi, toute information manipulée par un ordinateur doit être transformée en une suite de 0 et de 1 : c’est ce que l’on appelle la \textbf{représentation binaire}.
+	
+\souspartie{remarques}
+
+	\remarque{Pense à convertir en binaire avant de simplifier.}
+	
+	\remarque[Astuce]{Commence par les puissances de 2 les plus grandes.}
+	
+\souspartie{lignes et applications}
+	% Lignes
+	\lignes{3}
+	% Applications
+	\application{Convertis 37 en binaire.}{4}
+	
+	\application[Astuce]{Explique la conversion.}{4}
+	
+	\application[Astuce]{Explique la conversion.}
+	
+\souspartie{code}
+
+\begin{python}
+	def somme(a, b):
+		return a + b
+\end{python}
+
+\begin{sql}
+	SELECT * FROM persons WHERE age >= 18;
+\end{sql}
+
+\begin{html}
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>Titre de la page</title>
+	</head>
+	<body>
+	<h1>Texte principal</h1>
+	<p>Mon paragraphe</p>
+	</body>
+	</html>
+\end{html}
+
+\begin{bash}
+	ls -la
+	cd /etc/nginx
+	sudo systemctl restart nginx
+\end{bash}
+
+
+
+
+Dans le texte : \code{Python}{def x():}
+
+\souspartie{trou}
+
+Dans cet exemple, le langage utilisé est \trou{Python}{1}
+
+Les données transférées sur internet sont \trou{découpées en paquets. Les paquets sont expédiés de l'expéditeur vers le destinataire en passant par des routeurs aux n\oe uds du réseaux}{3} qui décident vers quel autre n\oe ud il doit les envoyer ; un routeur choisit parmi les différents chemins possibles en fonction de l'encombrement du réseau, des pannes, etc.
+
+\souspartie{pointillés}
+
+% pleine largeur du texte
+\pointilles
+
+% largeur personnalisée
+\pointilles[6cm]
+
+% dans une phrase
+1+1 : \pointilles[4cm]   \(4 \times 4\) : \pointilles[2cm]
+
+\souspartie{Opérations}
+
+% Décimal
+\begin{center}
+\addition{8475}{6520}
+
+% Binaire, avec et sans retenues
+\addition[Base=bin]{1111}{111}
+
+\addition[Base=bin,AffRetenues=false]{1111}{111}
+
+% Hexa, sans '=' et sans espacement horizontal
+\addition[Base=hex,AffEgal=false,Offset=0pt]{ABCD}{FE}
+
+% Soustraction binaire
+\soustraction[Base=bin]{10000}{111}
+
+% Multiplication hexa avec décalage '.'
+\multiplication[Base=hex]{ABCD}{FAFD}
+
+\multiplication[Base=bin]{11}{11}
+\end{center}
+
+\souspartie{Divisions}
+
+\begin{center}
+
+\division{128}
+
+\division[3]{98}
+
+\end{center}
+
+\souspartie{image}
+
+\img{img/image.jpg}
+
+\img[0.2]{img/image.jpg}
+
+\souspartie{tableaux}
+
+\tableau{Décimal|Binaire}{4|100 ; 5|101 ; 6|110}
+
+\tableau[.5\linewidth]
+{Tour|i|compteur}
+{
+	0|0|0 ;
+	1|1|1 ;
+	10|2|2
+}
+
+\souspartie{arbres}
+
+\arbre{[A [B] [C [E] [F]] [D]]}
+
+\arbre{%
+	[/
+	[bin]
+	[users [louis] [jean]]
+	[dev]
+	]
+}
+
+\begin{center}
+	\arbre{%
+		[Projet
+		[Spécifications]
+		[Dev [Backend] [Frontend]]
+		[Tests]
+		[Livraison]
+		]
+	}
+\end{center}
+
+
+
+\souspartie{graphes}
+
+\begin{GrapheTikz}
+	%SOMMETS
+	\GrphPlaceSommets{(1,4)/A (3,4)/B (4,3)/C (3,2)/D (2,1)/E (0,1)/F}
+	%ARÊTES
+	\GrphTraceAretes{A/B B/A B/D B/E C/A C/D D/A D/E E/F F/B}
+\end{GrapheTikz}
+
+
+\souspartie{Matrices d'adjacence}
+
+\matrice{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+
+\matriceadj[G]{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+
+
+\souspartie{piles - files}
+
+
+Voici une pile :  \\
+\pile{[2, 4, 3, 9, 5]}\\
+
+Voici une file :  \\
+\file{[A, V, P, Z, H]}
+
+\souspartie{Listes chaînées}
+
+Voici ma liste chaînée : \\
+
+\listechainee{2, 4, 3, 9}
+
+\souspartie{QCM}
+
+\begin{qcm}
+	
+	\begin{qcmquestion}{La dérivée de $x^2$ est :}
+		\begin{qcmchoices}
+			\qcmchoice{$x$}
+			\qcmcorrectchoice{$2x$}
+			\qcmchoice{$x^3$}
+			\qcmchoice{$\dfrac{1}{x}$}
+		\end{qcmchoices}
+		\qcmsolution{On a $(x^2)'=2x$.}
+	\end{qcmquestion}
+	
+	\begin{qcmquestion}{La dérivée de $x^2$ est :}
+		\begin{qcmchoices}
+			\qcmchoice{$x$}
+			\qcmcorrectchoice{$2x$}
+			\qcmchoice{$x^3$}
+			\qcmchoice{$\dfrac{1}{x}$}
+		\end{qcmchoices}
+		\qcmsolution{On a $(x^2)'=2x$.}
+	\end{qcmquestion}
+	
+	\begin{qcmfreequestion}{Donner la matrice d'adjacence}[\matriceadj[G]{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}][5]
+	\end{qcmfreequestion}
+	
+\end{qcm}
+
+\newpage
+
+
+% pleine largeur du texte
+\pointilles
+\\
+
+% largeur personnalisée
+\pointilles[6cm]
+\\
+
+% dans une phrase
+1+1 : \pointilles[4cm]   \(4 \times 4\) : \pointilles[2cm]
+\\
+
+Le langage \pointillestrou{html}[6cm]
+
+\addition[Base=bin]{00000101}{11111011}
+
+
+\end{document}

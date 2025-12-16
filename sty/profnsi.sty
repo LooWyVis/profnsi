@@ -1,0 +1,1066 @@
+% profnsi.sty — Package LaTeX pour les enseignants de NSI
+% Auteur : louisvis
+% Date : 2025/10/17
+% Version : 0.1
+
+% ============================
+% profnsi.sty — Package personnel LaTeX
+% ============================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{profnsi}[2025/10/17 v0.3 Package personnel LaTeX]
+
+% Valeurs par défaut
+\newcommand{\@typeDocument}{cours}
+\newcommand{\@versionDocument}{eleve}
+
+% Flag version prof/élève
+\newif\ifprofversion
+\profversionfalse
+
+% ---- Options de type de document ----
+\DeclareOption{cours}{\renewcommand{\@typeDocument}{cours}}
+\DeclareOption{exercices}{\renewcommand{\@typeDocument}{exercices}}
+\DeclareOption{tp}{\renewcommand{\@typeDocument}{tp}}
+\DeclareOption{ds}{\renewcommand{\@typeDocument}{ds}}
+\DeclareOption{projet}{\renewcommand{\@typeDocument}{projet}}
+
+% ---- Options de version ----
+\DeclareOption{eleve}{\renewcommand{\@versionDocument}{eleve}\profversionfalse}
+\DeclareOption{prof}{\renewcommand{\@versionDocument}{prof}\profversiontrue}
+
+% Options inconnues
+\DeclareOption*{\PackageWarning{profnsi}{Option inconnue : \CurrentOption}}
+
+\ProcessOptions\relax
+
+
+% ----- Dépendances utiles -----
+\RequirePackage{xkeyval}
+\RequirePackage{ifthen}
+\RequirePackage{xparse} % gestion des options et forme étoilée
+\RequirePackage[most]{tcolorbox} % moteur de boîtes
+\RequirePackage{xcolor} % couleurs personnalisables (si pas déjà chargé)
+\RequirePackage{pgffor} % pour \foreach utilisé dans \lignes
+\RequirePackage{listings}
+\RequirePackage{listingsutf8} % (optionnel mais utile si ton code contient de l'UTF-8)
+\RequirePackage{upquote}  % guillemets droits en verbatim
+\RequirePackage{calc}
+\RequirePackage{graphicx}
+\RequirePackage{xstring}
+\RequirePackage{xlop}
+\RequirePackage{ProfSio}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{forest}
+\RequirePackage{tikz}
+\RequirePackage{expl3}
+\RequirePackage{enumitem}
+\RequirePackage{etoolbox}
+
+\usetikzlibrary{
+	chains, 
+	shapes.multipart, 
+	arrows.meta, 
+	positioning,
+	calc
+}
+
+% ----- Config utilisateur : \profnsisetup{cle=valeur,...} -----
+\def\profnsi@matiere{}
+\def\profnsi@titre{}
+\def\profnsi@chapitre{}
+\def\profnsi@niveau{}
+
+\makeatletter
+\define@key{profnsi}{matiere}{\def\profnsi@matiere{#1}}
+\define@key{profnsi}{titre}{\def\profnsi@titre{#1}}
+\define@key{profnsi}{chapitre}{\def\profnsi@chapitre{#1}} % seulement le numéro (ex: 3)
+\define@key{profnsi}{niveau}{\def\profnsi@niveau{#1}}
+
+% --- doc
+% name: \profnsisetup
+% kind: newcommand
+% args:
+%   num: 1
+% description: Initialiser les paramètres du document
+% example: \profnsisetup{niveau=Première,matiere=NSI,titre=Représentation des données,chapitre=3}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\profnsisetup}[1]{\setkeys{profnsi}{#1}}
+
+% --- doc
+% name: \doublebar
+% kind: providecommand
+% args: {}
+% description: \doublebar au cas où elle n'existe pas
+% example: \doublebar
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\providecommand{\doublebar}{%
+	\noindent\rule{\textwidth}{3pt}\par
+	\vspace{-0.2em}\noindent\rule[3mm]{\textwidth}{0.5pt}\par
+}
+
+\newcommand*\profnsi@TypeUpper{\expandafter\MakeUppercase\expandafter{\@typeDocument}}
+\newcommand*\profnsi@VersionUpper{\expandafter\MakeUppercase\expandafter{\@versionDocument}}
+
+% --------- En-tête type ÉVALUATION (DS) ----------
+\newcommand{\profnsi@EvalHeader}{%
+	\@ifclassloaded{exam}{%
+		\pagestyle{headandfoot}%
+		\firstpageheadrule
+		% On enlève la "classe" comme demandé, on garde matière + titre
+		\firstpageheader{\profnsi@matiere}{\textbf{Évaluation : \ifx\profnsi@titre\@empty Titre\else \profnsi@titre\fi}}{\profnsi@niveau}%
+		\ifprofversion
+		\vspace{1em}\noindent\textbf{Corrigé — Version Prof}\par\vspace{0.5em}%
+		\else
+		\noindent\textbf{Nom :} \rule{0.35\linewidth}{0.4pt}\\
+		\textbf{Prénom :} \rule{0.35\linewidth}{0.4pt}\\
+		\textbf{Classe :} \rule{0.1\linewidth}{0.4pt}\par
+		\vspace{0.5em}%
+		\fi
+		\doublebar
+	}{%
+		% Fallback si 'exam' non chargé
+		\pagestyle{plain}%
+		{\large \textbf{\profnsi@matiere}}\par
+		\vspace{0.6em}
+		\begin{center}
+			\Large \textbf{Évaluation : }\textbf{\ifx\profnsi@titre\@empty Titre\else \profnsi@titre\fi}
+		\end{center}
+		\vspace{0.6em}
+		\ifprofversion
+		\noindent\textbf{Corrigé — Version Prof}\par
+		\else
+		\noindent\textbf{Nom :} \rule{0.35\linewidth}{0.4pt}\hfill
+		\textbf{Prénom :} \rule{0.35\linewidth}{0.4pt}\par
+		\vspace{0.5em}%
+		\fi
+		\doublebar
+	}%
+}
+
+% --------- En-tête type COURS / EXERCICES / TP ----------
+\newcommand{\profnsi@PedagoHeader}{%
+	\pagestyle{plain}%
+	{\normalsize
+		\ifx\profnsi@chapitre\@empty\else
+		\noindent Chapitre \profnsi@chapitre
+		\fi
+		\hfill
+		\ifx\profnsi@niveau\@empty\else
+		\profnsi@niveau~\profnsi@matiere
+		\fi
+	}\par
+	\vspace{0.8em}
+	\begin{center}
+		{\Large \textbf{\ifx\profnsi@titre\@empty Titre du document\else \profnsi@titre\fi}}\par
+		\vspace{0.8em}
+		{\normalsize \textbf{\MakeUppercase{\@typeDocument}}%
+			\ifprofversion~—~Version Prof\fi}
+	\end{center}
+	\doublebar
+}
+
+% --------- En-tête type Projet ----------
+\newcommand{\profnsi@ProjetHeader}{%
+	\pagestyle{plain}%
+	\begin{center}
+		{\Large \textbf{\ifx\profnsi@titre\@empty Titre du document\else \profnsi@titre\fi}}\par
+		\vspace{0.8em}
+		{\normalsize \textbf{\MakeUppercase{\@typeDocument}}}
+	\end{center}
+	\doublebar
+}
+
+% --------- Commande principale ----------
+\makeatletter
+% --- doc
+% name: \creerDoc
+% kind: newcommand
+% args: {}
+% description: Creer le template du document
+% example: \creerDoc
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\creerDoc}{%
+	\par\noindent
+	\ifthenelse{\equal{\@typeDocument}{ds}}{%
+		\profnsi@EvalHeader
+	}{%
+		\ifthenelse{\equal{\@typeDocument}{projet}}{%
+			\profnsi@ProjetHeader
+		}{%
+			\profnsi@PedagoHeader
+		}%
+	}%
+	\vspace{0.5em}%
+}
+\makeatother
+
+% Compteurs
+\newcounter{compteurpartie}
+\newcounter{compteursouspartie}
+\newcounter{compteurexercice}
+
+% --------- Cours ----------
+
+% ============================
+% Parties & sous-parties
+% ============================
+\renewcommand{\thecompteurpartie}{\arabic{compteurpartie}}
+\renewcommand{\thecompteursouspartie}{\thecompteurpartie.\arabic{compteursouspartie}}
+
+\newcommand{\prefixepartie}{Partie}
+
+% Flag global (si pas déjà défini)
+\newif\ifpartiesDansSommaire
+\partiesDansSommairefalse
+
+% --- doc
+% name: \activerSommaireParties
+% kind: NewDocumentCommand
+% args:
+%   spec: s
+% description: Afficher le sommaire dans le document :\n- non étoilée : active + imprime le sommaire + saute de page\n- étoilée     : active seulement (pas d'impression)
+% example: \activerSommaireParties
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\activerSommaireParties}{s}{%
+	\partiesDansSommairetrue
+	\IfBooleanF{#1}{%
+		\tableofcontents
+		\newpage
+	}%
+}
+
+% --- doc
+% name: \partie
+% kind: NewDocumentCommand
+% args:
+%   spec: s o m
+% description: Début d'une partie
+% example: \partie{Le système binaire}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\partie}{s o m}{%
+	\IfBooleanTF{#1}{%
+		% Forme étoilée (non numérotée)
+		\section*{\prefixepartie\ \ #3}%
+	}{%
+		% Forme numérotée
+		\refstepcounter{compteurpartie}%
+		\setcounter{compteursouspartie}{0}%
+		\section*{\prefixepartie\ \thecompteurpartie\ :\ \ #3}%
+		\ifpartiesDansSommaire
+		\addcontentsline{toc}{section}{%
+			\IfNoValueTF{#2}{\prefixepartie\ \thecompteurpartie\ :\ #3}{#2}%
+		}%
+		\fi
+	}%
+	\setcounter{compteurexercice}{0} 
+}
+
+% --- doc
+% name: \souspartie
+% kind: NewDocumentCommand
+% args:
+%   spec: s o m
+% description: Sous partie
+% example: \souspartie{Conversions}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\souspartie}{s o m}{%
+	\IfBooleanTF{#1}{%
+		\section*{#3}%
+	}{%
+		\refstepcounter{compteursouspartie}%
+		\section*{\thecompteursouspartie\ \hrulefill\ \ #3}%
+		\ifpartiesDansSommaire
+		\addcontentsline{toc}{subsection}{%
+			\IfNoValueTF{#2}{\thecompteursouspartie\ \ #3}{#2}%
+		}%
+		\fi
+	}%
+}
+
+% ============================
+% Boîte : Remarque
+% ============================
+
+% Style NB : gris clair pour le fond, noir pour le cadre
+\tcbset{
+	boite-remarque/.style={
+		enhanced,
+		breakable,
+		colback=gray!10,       % gris très clair (presque blanc)
+		colframe=black,       % cadre noir
+		boxrule=0.6pt,
+		arc=5pt,
+		left=8pt, right=8pt, top=6pt, bottom=6pt,
+		borderline={0.4pt}{0pt}{dotted}, % liseré intérieur pointillé
+		fonttitle=\bfseries,
+		coltitle=black,
+		colbacktitle=gray!20,  % même fond pour le titre
+		before skip=10pt, after skip=10pt,
+	}
+}
+
+% Environnement bas niveau
+\newtcolorbox{remarquebox}[2][]{%
+	boite-remarque,
+	title={#2},
+	#1
+}
+
+% --- doc
+% name: \remarque
+% kind: NewDocumentCommand
+% args:
+%   spec: o m
+% description: Creer une boite de remarque
+% example: \remarque{Contenu}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\remarque}{o m}{%
+	\IfNoValueTF{#1}{%
+		\begin{remarquebox}{Remarque}#2\end{remarquebox}%
+	}{%
+		\begin{remarquebox}{#1}#2\end{remarquebox}%
+	}%
+}
+
+% --- doc
+% name: \lignes
+% kind: newcommand
+% args:
+%   num: 1
+% description: Commande : \lignes{<nombre>}, fais des lignes pour ecrire
+% example: \lignes{4}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\lignes}[1]{%
+	\par\vspace{0.5em}%
+	\noindent
+	\foreach \i in {1,...,#1}{%
+		\noindent\makebox[\linewidth]{\dotfill}\par\vspace{0.8em}%
+	}%
+}
+
+% Définition de la boîte Application
+% (identique, sauf qu'on autorise des options facultatives via [1][] pour le titre custom)
+\newtcolorbox{applicationbox}[1][]{%
+	colback=white,                      % fond intérieur
+	colframe=gray!70,                   % bordure gris clair
+	coltitle=black,                     % couleur du titre
+	colbacktitle=gray!20,               % fond de l'en-tête gris clair
+	title=\textbf{Application},         % texte de l'en-tête (défaut)
+	fonttitle=\large,                   % taille du titre
+	enhanced,                           % activer options avancées
+	arc=10pt,                           % coins bien arrondis
+	boxrule=0.6pt,                      % épaisseur de la bordure
+	borderline={0.5pt}{0pt},   % ligne pointillée intérieure
+	top=6pt, bottom=6pt, left=8pt, right=8pt, % marges internes
+	#1                                  % <-- permet de surcharger (ex: title=...)
+}
+
+% --- doc
+% name: \application
+% kind: NewDocumentCommand
+% args:
+%   spec: o m g
+% description: Commande \application Creer une boite d'application
+% example: \application{Contenu}{<nb lignes>} - \application[Titre perso]{Contenu}{<nb lignes>}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\application}{o m g}{%
+	\IfNoValueTF{#1}{%
+		\begin{applicationbox}%
+			#2%
+			\IfNoValueF{#3}{\par\lignes{#3}}%
+		\end{applicationbox}%
+	}{%
+		\begin{applicationbox}[title=\textbf{#1}]%
+			#2%
+			\IfNoValueF{#3}{\par\lignes{#3}}%
+		\end{applicationbox}%
+	}%
+}
+
+% Style de base (noir & blanc, fond gris très léger)
+\lstdefinestyle{codebase}{
+	basicstyle=\small,
+	numbers=left,
+	numbersep=6pt,
+	frame=single,
+	framerule=0.4pt,
+	backgroundcolor=\color{gray!5},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true,
+	breaklines=true,
+	breakatwhitespace=true,
+	upquote=true,
+	tabsize=2,
+	keywordstyle=\color{black}\bfseries
+}
+
+% Langages (JS peut ne pas être pré-défini selon distributions : on le déclare au besoin)
+\lstdefinelanguage{JavaScript}{
+	morekeywords={break,case,catch,class,const,continue,debugger,default,delete,do,else,export,extends,
+		finally,for,function,if,import,in,instanceof,let,new,return,super,switch,this,throw,try,typeof,var,void,while,yield},
+	sensitive=true,
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]', morestring=[b]"
+}
+
+% Environnements blocs — argument optionnel [<options listings>] pour ajuster au besoin
+\lstnewenvironment{python}[1][] {
+	\lstset{
+		style=codebase,
+		frameround=tttn,
+		language=Python
+	}
+}{}
+\lstnewenvironment{sql} [1][] {
+	\lstset{
+		language=SQL,
+		style=codebase,
+		showstringspaces=false,
+		morekeywords={*},
+	}
+}{}
+\lstnewenvironment{html}[1][] {
+	\lstset{
+		style=codebase,
+		frameround=tttn,
+		language=HTML
+		}
+}{}
+\lstnewenvironment{css}[1][] {
+	\lstset{
+		style=codebase,
+		frameround=tttn,
+		language=CSS
+		}
+}{}
+\lstnewenvironment{js}[1][] {
+	\lstset{
+		style=codebase,
+		frameround=tttn,
+		language=JavaScript
+		}
+}{}
+\lstnewenvironment{bash}[1][]{
+	\lstset{
+		style=codebase,
+		frameround=tttn,
+		language=bash,
+		numbers=none,
+		morekeywords={ls, sudo, mkdir}
+		}
+}{}
+
+% --- doc
+% name: \code
+% kind: NewDocumentCommand
+% args:
+%   spec: m m
+% description: Code Inline : \codeinline{<langage>}{<code>}
+% example: \codeinline{SQL}{<SELECT * FROM livres;>}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\code}{m m}{%
+	\lstinline[language=#1]!#2!%
+}
+
+% --- doc
+% name: \trou
+% kind: newcommand
+% args:
+%   num: 2
+% description: En version prof : texte normal, En version élève : pointillés occupant l'espace texte
+% example: \trou{ma phrase a complétée par les élèves}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\trou}[2]{%
+	\ifprofversion
+	% VERSION PROF : Affiche le texte tel quel
+	\textbf{#1}%
+	\else
+	\lignes{#2}
+	\fi
+}
+
+
+% --- doc
+% name: \pointilles
+% kind: newcommand
+% args:
+%   num: 1
+% description: Affiche des pointillés pour une certaines largeur
+% example: \pointilles{6}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\pointilles}{O{\linewidth}}{%
+	\noindent\makebox[#1]{\dotfill}%
+}
+
+% --- doc
+% name: \pointillestrou
+% kind: newcommand
+% args:
+%   num: 1
+% description: Affiche des pointillés pour une certaines largeur
+% example: \pointilles{Réponse} [6cm]
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\pointillestrou}{m O{\linewidth}}{%	
+	\ifprofversion
+	% VERSION PROF : Affiche le texte tel quel
+	\textbf{#1}%
+	\else
+	\noindent\makebox[#2]{\dotfill}%
+	\fi
+}
+
+
+% --- doc
+% name: \addition
+% kind: newcommand
+% args:
+%   num: 2
+% description: Pose une addition sous différentes bases
+% example: \addition{8475}{6520}, \addition[Base=bin]{1111}{111}, \addition[Base=hex,AffEgal=false,Offset=0pt]{ABCD}{FE}, \addition[Base=bin,AffRetenues=false]{1111}{111}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\addition}{ O{} m m }{%
+	\OpeBinDecHex[#1]{#2+#3}%
+}
+
+% --- doc
+% name: \soustraction
+% kind: newcommand
+% args:
+%   num: 2
+% description: Pose une soustraction sous différentes bases
+% example: \soustraction[Base=bin]{10000}{111}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\soustraction}{ O{} m m }{%
+	\OpeBinDecHex[#1]{#2-#3}%
+}
+
+% --- doc
+% name: \multiplication
+% kind: newcommand
+% args:
+%   num: 2
+% description: Pose une multiplication sous différentes bases
+% example: \multiplication[Base=hex]{ABCD}{FAFD}, \multiplication[Base=bin]{11}{11}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\multiplication}{ O{} m m }{%
+	\OpeBinDecHex[#1]{#2*#3}%
+}
+
+% --- doc
+% name: \division
+% kind: newcommand
+% args:
+%   num: 1
+% description: Pose une suite de divisions (conversion) sous différentes bases (conversion dec to bin par defaut)
+% example: \division{128}, \division[3]{98}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\makeatletter
+\newbox\nb@box
+\newcount\nb@a
+\newcount\nb@b
+\newcount\iter@
+
+\newcommand\division@start[2][2]{%
+	\def\dividende@{#2}\def\base@{#1}\iter@\@ne\division@{#2}{#1}}
+\newcommand\division@[2]{%
+	\noindent\setbox\nb@box\hbox{\kern0.5em#1\kern0.5em}%
+	\nb@a#1 \nb@b#1 \divide\nb@b#2
+	\vtop{%
+		\begingroup
+		\multiply\nb@b#2 \advance\nb@a-\nb@b
+		\hbox to\wd\nb@box{\hfil#1\hfil}%
+		\vskip3pt\hrule height0pt width\wd\nb@box\vskip3.4pt
+		\hbox to\wd\nb@box{\hfil\textbf{\color{red}\number\nb@a}\kern0.5em}%
+		\expandafter\xdef\csname reste@\number\iter@\endcsname{\number\nb@a}%
+		\endgroup}%
+	\setbox\nb@box\hbox{8}\vrule height\ht\nb@box depth3.5ex
+	\setbox\nb@box\hbox{\kern0.5em\ifnum#2>\nb@b #2\else\number\nb@b\fi\kern0.5em}%
+	\vtop{%
+		\hbox to\wd\nb@box{\kern0.5em#2\hfil}%
+		\vskip3pt\hrule height0.4pt width\wd\nb@box\vskip3pt
+		\hbox{%
+			\csname @\ifnum\nb@b>\z@ first\else second\fi oftwo\endcsname
+			{\advance\iter@\@ne\gdef\maxiter{\number\iter@}%
+				\expandafter\division@\expandafter{\number\nb@b}{#2}}%
+			{\kern0.5em\number\nb@b\xdef\maxiter{\number\iter@}}}}}
+
+\newcommand\afficheresultat{$(\dividende@)_{10}=(\afficheresultat@\maxiter)_{\base@}$}
+\newcommand\afficheresultat@[1]{%
+	\csname reste@#1\endcsname
+	\ifnum#1>\@ne
+	\expandafter\expandafter\expandafter\afficheresultat@
+	\else
+	\expandafter\@gobble
+	\fi{\number\numexpr#1-1}}
+
+\newcommand\division[2][2]{%
+	% 1. Lance le processus de division récursive
+	\par\vspace{0.5em}%
+	\division@start[#1]{#2}%
+	% 2. Affiche le résultat après la division
+	\par\vspace{0.5em}%
+	\afficheresultat
+	\par\vspace{0.5em}%
+}
+\makeatother
+
+% --- doc
+% name: \img
+% kind: newcommand
+% args:
+%   num: 1
+% description: Affiche une image (centrée), option pour rétrécir
+% example: \img{img/image.jpg}, \img[0.2]{img/image.jpg}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\img}{O{0.8} m}{%
+	\begin{center}
+		\includegraphics[width=#1\linewidth]{#2}%
+	\end{center}
+}
+
+% --- doc
+% name: \tableau
+% kind: newcommand
+% args:
+%   num: 2
+% description: Affiche un tableau
+% example: \tableau{Décimal|Binaire}{4|100 ; 5|101 ; 6|110}, \tableau[.5\linewidth]{Tour|i|compteur}{0|0|0 ;1|1|1 ;10|2|2}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\makeatletter
+\NewDocumentCommand{\tableau}{ O{\linewidth} m m }{%
+	% nb de colonnes = nb de | + 1
+	\StrCount{#2}{|}[\tbl@bars]%
+	\edef\tbl@cols{\the\numexpr\tbl@bars+1\relax}%
+	% préparer en-têtes / corps
+	\StrSubstitute{#2}{|}{&}[\tbl@head]%
+	\StrSubstitute{#3}{;}{\\}[\tbl@bodyA]%
+	\StrSubstitute{\tbl@bodyA}{|}{&}[\tbl@body]%
+	%
+	\begin{center}
+		\small
+		\begin{tabularx}{#1}{|*{\tbl@cols}{Y|}}
+			\hline
+			\tbl@head\\ \hline
+			\tbl@body\\ \hline
+		\end{tabularx}
+	\end{center}
+}
+\makeatother
+
+% --- doc
+% name: \arbre
+% kind: newcommand
+% args:
+%   num: 1
+% description: Affiche un arbre
+% example: \arbre{[A [B] [C [E] [F]] [D]]}, \arbre{[/ [bin] [users [louis] [jean]] [dev] ]}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\forestset{
+	arbre/.style={
+		for tree={
+			draw,
+			rounded corners,
+			align=center,
+			inner sep=2pt,
+			outer sep=0pt,
+			s sep=4mm,            % espace horizontal entre frères/soeurs
+			l sep=9mm,            % espace vertical entre niveaux
+			edge={-Latex},        % jolis traits avec flèche
+			font=\small,
+		},
+		% Clés utilisateur (fr)
+		niveau sep/.style   ={l sep=#1},
+		fratrie sep/.style  ={s sep=#1},
+		dir/.style          ={grow'=#1},      % up, down, left, right
+		rect/.style         ={for tree/.append style={rounded corners=0}},
+		sanscadre/.style    ={for tree/.append style={draw=none}},
+		rempli/.style       ={for tree/.append style={fill=#1}},
+		texte/.style        ={for tree/.append style={font=#1}},
+		largeur/.style      ={for tree/.append style={text width=#1}},
+		centrer/.style      ={for tree/.append style={align=center}},
+		gauche/.style       ={for tree/.append style={align=left}},
+		droite/.style       ={for tree/.append style={align=right}},
+	},
+}
+
+\NewDocumentCommand{\arbre}{O{} m}{%
+	\begin{forest}
+		arbre,
+		#1,
+		#2
+	\end{forest}
+}
+
+% --- doc
+% name: \affichermatrice
+% kind: newcommand
+% args:
+%   num: 1
+% description: Représenter une matrice d'adjacence (brute : pas en ecriture mathématique)
+% example: \affichermatrice{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\affichermatrice}[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+% --- doc
+% name: \matrice
+% kind: newcommand
+% args:
+%   num: 1
+% description: Représenter une matrice d'adjacence
+% example: \matrice{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}, \matriceadj[G]{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\matrice}[1]{
+	\ensuremath{\affichermatrice{#1}}
+}
+
+% --- doc
+% name: \matriceadj
+% kind: newcommand
+% args:
+%   num: 1
+% description: Représenter une matrice d'adjacence avec son nom
+% example: \matriceadj[G]{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\matriceadj}[2][]{%
+	\ensuremath{A_{#1} = \matrice{#2}}%
+}
+
+% --- doc
+% name: \pile
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: Représenter une pile
+% example: \pile{[2, 4, 3, 9, 5]}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\pile}{m}{%
+	% 1. Retirer les crochets et remplacer les virgules par des fins de ligne
+	\StrGobbleLeft{#1}{1}[\tempA]
+	\StrGobbleRight{\tempA}{1}[\tempB]
+	\StrSubstitute{\tempB}{,}{ \\ }[\tempC]
+	
+	% 2. Encapsuler la structure de la pile dans un noeud TikZ
+	\tikz[baseline=(pile.base), yshift=0.5ex] {
+		% Dessiner le tableau (la Pile) et le nommer 'pile'
+		\node (pile) [inner sep=0pt] {
+			\begin{tabular}{|c|}
+				\hline
+				\tempC \\ 
+				\hline
+			\end{tabular}
+		};
+		
+		% Coordonnée centrale supérieure de la pile
+		\coordinate (topcenter) at (pile.north);
+		
+		% Flèche d'ENTRÉE (Push / Empiler) centrée, pointant vers le BAS (dans la pile)
+		\draw[->, very thick] ($(topcenter) + (-0.35cm, 0.7cm)$) -- ($(topcenter) + (-0.35cm, 0.2cm)$)
+		node[left] {\tiny Entrée}; % Texte "Entrée" au-dessus de la flèche
+		
+		% Flèche de SORTIE (Pop / Dépiler) centrée, pointant vers le HAUT (hors de la pile)
+		\draw[->, very thick] ($(topcenter) + (0.35cm, 0.2cm)$) -- ($(topcenter) + (0.35cm, 0.7cm)$)
+		node[right] {\tiny Sortie}; % Texte "Sortie" au-dessus de la flèche
+
+	}
+}
+
+% --- doc
+% name: \file
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: Représenter une file
+% example: \file{[A, V, P, Z, H]}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\file}{m}{%
+	% 1. Retirer les crochets et remplacer les virgules par des séparateurs de colonnes '&'
+	\StrGobbleLeft{#1}{1}[\tempA]
+	\StrGobbleRight{\tempA}{1}[\tempB]
+	\StrSubstitute{\tempB}{,}{ & }[\tempC]
+	
+	% 2. Encapsuler la structure de la file dans un noeud TikZ
+	\tikz[baseline=(file.base)] {
+		% Dessiner le tableau (la File) et le nommer 'file'
+		\node (file) [inner sep=0pt] {
+			\begin{tabular}{|*{100}{c|}}
+				\hline
+				\tempC \\
+				\hline
+			\end{tabular}
+		};
+		
+		% Flèche d'ENTRÉE (Enfiler / Enqueue) à droite
+		\draw[->, very thick] ($(file.west) + (-0.5cm, 0)$) -- (file.west)
+		node[left, midway, xshift=-0.25cm] {\tiny Entrée};
+		
+		% Flèche de SORTIE (Défiler / Dequeue) à gauche
+		\draw[->, very thick] (file.east) -- ($(file.east) + (0.5cm, 0)$)
+		node[right, midway, xshift=0.25cm] {\tiny Sortie};
+	}
+}
+
+% --- doc
+% name: \listechainee
+% kind: newcommand
+% args:
+%   num: 1
+% description: Représenter une liste chainée
+% example: \listechainee{2, 4, 3, 9}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\listechainee}[1]{%
+	\begin{tikzpicture}[
+		list/.style={
+			rectangle split,
+			rectangle split parts=2,
+			rectangle split horizontal,
+			draw,
+			minimum height=0.5cm,
+			text centered
+		},
+		start chain=going right,
+		node distance=1cm
+		]
+		
+		% Création des blocs pour chaque valeur
+		\def\lastindex{0}%
+		\foreach[count=\i] \val in {#1} {%
+			\node[list,on chain] (node\i) {\val};
+			\xdef\lastindex{\i}%
+		}%
+		
+		% Bloc de fin (NULL)
+		\node[on chain, draw, inner sep=6pt] (null) {};
+		\draw (null.north east) -- (null.south west);
+		\draw (null.north west) -- (null.south east);
+		
+		% Flèches entre les blocs
+		\pgfmathtruncatemacro{\NminusOne}{\lastindex-1}
+		\ifnum\lastindex>1
+		\foreach \i in {1,...,\NminusOne} {%
+			\pgfmathtruncatemacro{\j}{\i+1}
+			% flèche depuis la partie "next" (split part 2) vers le bloc suivant
+			\draw[-{Stealth}] 
+			let \p1 = (node\i.two), \p2 = (node\i.center)
+			in (\x1,\y2) -- (node\j);
+		}%
+		\fi
+		
+		% Flèche du dernier bloc vers NULL
+		\ifnum\lastindex>0
+		\draw[-{Stealth}]
+		let \p1 = (node\lastindex.two), \p2 = (node\lastindex.center)
+		in (\x1,\y2) -- (null);
+		\fi
+		
+	\end{tikzpicture}%
+}
+
+\renewcommand{\thecompteurexercice}{Exercice \arabic{compteurexercice}}
+
+% --- doc
+% name: \exercice
+% kind: NewDocumentCommand
+% args:
+%   spec: s o m
+% description: Creer un exo
+% example: 	\exercice{Binaire vers hexadécimal}, 	\exercice*{Exo non numéroté}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\exercice}{s o m}{%
+	\IfBooleanTF{#1}{%
+		\textbf{Exercice.} #3
+	}{%
+		\refstepcounter{compteurexercice}%
+		\vspace{0.2cm}
+		\textbf{\thecompteurexercice.} #3
+		\vspace{0.1cm}
+		\noindent
+	}%
+}
+
+
+% ----- Correction -----
+
+% --- doc
+% name: \correction
+% kind: newcommand
+% args:
+%   num: 1
+% description: Correction affiché (en rouge) en mode prof, ignorée en mode élève
+% example: \correction{Ma correction}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\newcommand{\correction}[1]{%
+	\ifprofversion
+		% VERSION PROF : Affiche le texte tel quel en rouge
+		\color{red}
+		#1%
+		\color{black}
+	\fi
+}
+
+
+% ----- QCM -------
+% -- Compteur de questions (namespacé)
+\newcounter{qcmq}
+
+% -- Liste de choix (namespacée)
+\newlist{qcmchoices}{enumerate}{1}
+\setlist[qcmchoices]{label=\alph*., leftmargin=*, itemsep=2pt}
+
+% -- Environnement global (facultatif)
+\NewDocumentEnvironment{qcm}{ O{} }{\begingroup}{\endgroup}
+
+\NewDocumentEnvironment{qcmquestion}{ O{} }{%
+	\refstepcounter{qcmq}%
+	\par\medskip
+	\noindent\textbf{Question \theqcmq.}%
+	\if\relax\detokenize{#1}\relax\else~\emph{[#1]}\fi\quad
+	\ignorespaces
+}{\par\medskip}
+
+
+% --- doc
+% name: \qcmchoice
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: choix de réponse dans un QCM
+% example: \qcmchoice{$x^3$}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\qcmchoice}{ m }{\item #1}
+
+% --- doc
+% name: \qcmcorrectchoice
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: choix de réponse dans un QCM qui est la bonne réponse, mis en rouge en mode prof
+% example: \qcmcorrectchoice{$2x$}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\qcmcorrectchoice}{ m }{%
+	\ifprofversion
+	\item \color{red} \textbf{#1} \color{black}%
+	\else
+	\item #1%
+	\fi
+}
+
+% --- doc
+% name: \qcmsolution
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: explications de réponse de QCM (affiché seulement en version prof)
+% example: \qcmsolution{On a $(x^2)'=2x$.}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\qcmsolution}{ m }{%
+	\ifprofversion
+	\par \color{red}  \smallskip\noindent\textit{Solution : }#1 \color{black} %
+	\fi
+}
+
+% --- doc
+% name: \qcmfreequestion
+% kind: NewDocumentCommand
+% args:
+%   spec: m
+% description: Question ouverte de QCM (avec nombre de lignes de réponse et correction)
+% example: 	\begin{qcmfreequestion}{Résoudre $x^2-5x+6=0$}[Les racines sont $x=2$ et $x=3$.][5]
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentEnvironment{qcmfreequestion}{m O{} O{} }{%
+	\refstepcounter{qcmq}%
+	\par\medskip
+	\noindent\textbf{Question \theqcmq.}~#1%
+	\par\smallskip
+	% Corrigé (uniquement prof)
+	\ifprofversion
+	\par \color{red} \medskip\noindent\textit{Réponse attendue : }#2 \color{black}%
+	\else
+	% Zone de réponse élève :
+	\lignes{#3}
+	\fi
+}{\par\medskip}
+	
+% -- (Optionnel) Alias compatibles si *non déjà définis* ailleurs :
+\makeatletter
+\@ifundefined{choices}{%
+	\let\choices\qcmchoices
+}{}
+\@ifundefined{question}{%
+	\let\question\qcmquestion
+}{}
+\@ifundefined{solution}{%
+	\let\solution\qcmsolution
+}{}
+\makeatother
+
+% ----- FIN -----
