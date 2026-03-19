@@ -447,21 +447,21 @@
 		style=codebase,
 		frameround=tttn,
 		language=HTML
-		}
+	}
 }{}
 \lstnewenvironment{css}[1][] {
 	\lstset{
 		style=codebase,
 		frameround=tttn,
 		language=CSS
-		}
+	}
 }{}
 \lstnewenvironment{js}[1][] {
 	\lstset{
 		style=codebase,
 		frameround=tttn,
 		language=JavaScript
-		}
+	}
 }{}
 \lstnewenvironment{bash}[1][]{
 	\lstset{
@@ -470,7 +470,7 @@
 		language=bash,
 		numbers=none,
 		morekeywords={ls, sudo, mkdir}
-		}
+	}
 }{}
 
 % --- doc
@@ -814,7 +814,7 @@
 		% Flèche de SORTIE (Pop / Dépiler) centrée, pointant vers le HAUT (hors de la pile)
 		\draw[->, very thick] ($(topcenter) + (0.35cm, 0.2cm)$) -- ($(topcenter) + (0.35cm, 0.7cm)$)
 		node[right] {\tiny Sortie}; % Texte "Sortie" au-dessus de la flèche
-
+		
 	}
 }
 
@@ -930,6 +930,7 @@
 		\textbf{Exercice.} #3
 	}{%
 		\refstepcounter{compteurexercice}%
+		\setcounter{qcmq}{0} 
 		\vspace{0.2cm}
 		\textbf{\thecompteurexercice.} #3
 		\vspace{0.1cm}
@@ -952,10 +953,10 @@
 % --- end-doc
 \newcommand{\correction}[1]{%
 	\ifprofversion
-		% VERSION PROF : Affiche le texte tel quel en rouge
-		\color{red}
-		#1%
-		\color{black}
+	% VERSION PROF : Affiche le texte tel quel en rouge
+	\color{red}
+	#1%
+	\color{black}
 	\fi
 }
 
@@ -1033,34 +1034,34 @@
 %   spec: m
 % description: Question ouverte de QCM (avec nombre de lignes de réponse et correction)
 % example: 	\begin{qcmfreequestion}{Résoudre $x^2-5x+6=0$}[Les racines sont $x=2$ et $x=3$.][5]
-% meta:
-%   file: profnsi.sty
-% --- end-doc
-\NewDocumentEnvironment{qcmfreequestion}{m O{} O{} }{%
-	\refstepcounter{qcmq}%
-	\par\medskip
-	\noindent\textbf{Question \theqcmq.}~#1%
-	\par\smallskip
-	% Corrigé (uniquement prof)
-	\ifprofversion
-	\par \color{red} \medskip\noindent\textit{Réponse attendue : }#2 \color{black}%
-	\else
-	% Zone de réponse élève :
-	\lignes{#3}
-	\fi
-}{\par\medskip}
+	% meta:
+	%   file: profnsi.sty
+	% --- end-doc
+	\NewDocumentEnvironment{qcmfreequestion}{m O{} O{} }{%
+		\refstepcounter{qcmq}%
+		\par\medskip
+		\noindent\textbf{Question \theqcmq.}~#1%
+		\par\smallskip
+		% Corrigé (uniquement prof)
+		\ifprofversion
+		\par \color{red} \medskip\noindent\textit{Réponse attendue : }#2 \color{black}%
+		\else
+		% Zone de réponse élève :
+		\lignes{#3}
+		\fi
+	}{\par\medskip}
 	
-% -- (Optionnel) Alias compatibles si *non déjà définis* ailleurs :
-\makeatletter
-\@ifundefined{choices}{%
-	\let\choices\qcmchoices
-}{}
-\@ifundefined{question}{%
-	\let\question\qcmquestion
-}{}
-\@ifundefined{solution}{%
-	\let\solution\qcmsolution
-}{}
-\makeatother
-
-% ----- FIN -----
+	% -- (Optionnel) Alias compatibles si *non déjà définis* ailleurs :
+	\makeatletter
+	\@ifundefined{choices}{%
+		\let\choices\qcmchoices
+	}{}
+	\@ifundefined{question}{%
+		\let\question\qcmquestion
+	}{}
+	\@ifundefined{solution}{%
+		\let\solution\qcmsolution
+	}{}
+	\makeatother
+	
+	% ----- FIN -----
