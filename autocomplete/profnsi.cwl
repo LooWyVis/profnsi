@@ -62,6 +62,7 @@
 \multiplication{%<arg1%>}{%<arg2%>}
 \N
 \norme{%<arg1%>}
+\partie{%<arg1%>}
 \partie*[%<opt1%>]{%<arg1%>}
 \pile{%<arg1%>}
 \pointilles[%<opt1%>]
@@ -82,6 +83,7 @@
 \Rp
 \Rps
 \sortie{%<arg1%>}
+\souspartie{%<arg1%>}
 \souspartie*[%<opt1%>]{%<arg1%>}
 \soustraction[%<opt1%>]{%<arg1%>}{%<arg2%>}
 \soustraction{%<arg1%>}{%<arg2%>}

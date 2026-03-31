@@ -48,12 +48,16 @@
 % ============================
 % Langue, encodage, typographie
 % ============================
+\RequirePackage{iftex}
 \RequirePackage[french]{babel}
-\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc} % si compilation pdfLaTeX
-\RequirePackage{lmodern}
+
+\ifPDFTeX
+  \RequirePackage[utf8]{inputenc}
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage{lmodern}
+\fi
+
 \RequirePackage{microtype}
-\RequirePackage[a4paper,margin={.1\paperheight,.1\paperwidth},marginratio=1:1]{geometry}
 \RequirePackage{csquotes}
 
 % ============================
