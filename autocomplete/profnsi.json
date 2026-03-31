@@ -1,0 +1,466 @@
+{
+  "deps": [],
+  "macros": [
+    {
+      "name": "abs",
+      "arg": {
+        "format": "{}",
+        "snippet": "abs{${1:arg1}}"
+      }
+    },
+    {
+      "name": "activerSommaireParties*"
+    },
+    {
+      "name": "addition",
+      "arg": {
+        "format": "[]{}{}",
+        "snippet": "addition[${3:opt1}]{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "addition",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "addition{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "affichermatrice",
+      "arg": {
+        "format": "{}",
+        "snippet": "affichermatrice{${1:arg1}}"
+      }
+    },
+    {
+      "name": "application",
+      "arg": {
+        "format": "[]{}{}",
+        "snippet": "application[${3:opt1}]{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "arbre",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "arbre[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "arbre",
+      "arg": {
+        "format": "{}",
+        "snippet": "arbre{${1:arg1}}"
+      }
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "ceil",
+      "arg": {
+        "format": "{}",
+        "snippet": "ceil{${1:arg1}}"
+      }
+    },
+    {
+      "name": "code",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "code{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "complexite",
+      "arg": {
+        "format": "{}",
+        "snippet": "complexite{${1:arg1}}"
+      }
+    },
+    {
+      "name": "correction",
+      "arg": {
+        "format": "{}",
+        "snippet": "correction{${1:arg1}}"
+      }
+    },
+    {
+      "name": "creerDoc"
+    },
+    {
+      "name": "D"
+    },
+    {
+      "name": "division",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "division[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "division",
+      "arg": {
+        "format": "{}",
+        "snippet": "division{${1:arg1}}"
+      }
+    },
+    {
+      "name": "dossier",
+      "arg": {
+        "format": "{}",
+        "snippet": "dossier{${1:arg1}}"
+      }
+    },
+    {
+      "name": "doublebar"
+    },
+    {
+      "name": "exercice*",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "exercice*[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "fichier",
+      "arg": {
+        "format": "{}",
+        "snippet": "fichier{${1:arg1}}"
+      }
+    },
+    {
+      "name": "file",
+      "arg": {
+        "format": "{}",
+        "snippet": "file{${1:arg1}}"
+      }
+    },
+    {
+      "name": "floor",
+      "arg": {
+        "format": "{}",
+        "snippet": "floor{${1:arg1}}"
+      }
+    },
+    {
+      "name": "img",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "img[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "img",
+      "arg": {
+        "format": "{}",
+        "snippet": "img{${1:arg1}}"
+      }
+    },
+    {
+      "name": "lignes",
+      "arg": {
+        "format": "{}",
+        "snippet": "lignes{${1:arg1}}"
+      }
+    },
+    {
+      "name": "listechainee",
+      "arg": {
+        "format": "{}",
+        "snippet": "listechainee{${1:arg1}}"
+      }
+    },
+    {
+      "name": "matriceadj",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "matriceadj[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "matriceadj",
+      "arg": {
+        "format": "{}",
+        "snippet": "matriceadj{${1:arg1}}"
+      }
+    },
+    {
+      "name": "matrice",
+      "arg": {
+        "format": "{}",
+        "snippet": "matrice{${1:arg1}}"
+      }
+    },
+    {
+      "name": "multiplication",
+      "arg": {
+        "format": "[]{}{}",
+        "snippet": "multiplication[${3:opt1}]{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "multiplication",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "multiplication{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "N"
+    },
+    {
+      "name": "norme",
+      "arg": {
+        "format": "{}",
+        "snippet": "norme{${1:arg1}}"
+      }
+    },
+    {
+      "name": "partie*",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "partie*[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "pile",
+      "arg": {
+        "format": "{}",
+        "snippet": "pile{${1:arg1}}"
+      }
+    },
+    {
+      "name": "pointilles",
+      "arg": {
+        "format": "[]",
+        "snippet": "pointilles[${1:opt1}]"
+      }
+    },
+    {
+      "name": "pointillestrou",
+      "arg": {
+        "format": "{}[]",
+        "snippet": "pointillestrou{${1:arg1}}[${2:opt1}]"
+      }
+    },
+    {
+      "name": "prefixepartie"
+    },
+    {
+      "name": "profnsisetup",
+      "arg": {
+        "format": "{}",
+        "snippet": "profnsisetup{${1:arg1}}"
+      }
+    },
+    {
+      "name": "Q"
+    },
+    {
+      "name": "qcmchoice",
+      "arg": {
+        "format": "{}",
+        "snippet": "qcmchoice{${1:arg1}}"
+      }
+    },
+    {
+      "name": "qcmcorrectchoice",
+      "arg": {
+        "format": "{}",
+        "snippet": "qcmcorrectchoice{${1:arg1}}"
+      }
+    },
+    {
+      "name": "qcmsolution",
+      "arg": {
+        "format": "{}",
+        "snippet": "qcmsolution{${1:arg1}}"
+      }
+    },
+    {
+      "name": "R"
+    },
+    {
+      "name": "remarque",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "remarque[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "Rm"
+    },
+    {
+      "name": "Rp"
+    },
+    {
+      "name": "Rps"
+    },
+    {
+      "name": "sortie",
+      "arg": {
+        "format": "{}",
+        "snippet": "sortie{${1:arg1}}"
+      }
+    },
+    {
+      "name": "souspartie*",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "souspartie*[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "soustraction",
+      "arg": {
+        "format": "[]{}{}",
+        "snippet": "soustraction[${3:opt1}]{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "soustraction",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "soustraction{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "tableau",
+      "arg": {
+        "format": "[]{}{}",
+        "snippet": "tableau[${3:opt1}]{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "tableau",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "tableau{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "thecompteurexercice"
+    },
+    {
+      "name": "thecompteurpartie"
+    },
+    {
+      "name": "thecompteursouspartie"
+    },
+    {
+      "name": "touche",
+      "arg": {
+        "format": "{}",
+        "snippet": "touche{${1:arg1}}"
+      }
+    },
+    {
+      "name": "trou",
+      "arg": {
+        "format": "{}{}",
+        "snippet": "trou{${1:arg1}}{${2:arg2}}"
+      }
+    },
+    {
+      "name": "variable",
+      "arg": {
+        "format": "{}",
+        "snippet": "variable{${1:arg1}}"
+      }
+    },
+    {
+      "name": "Z"
+    },
+    {
+      "name": "Zp"
+    }
+  ],
+  "envs": [
+    {
+      "name": "applicationbox",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "css",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "html",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "js",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "pseudocode",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "python",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "qcmfreequestion",
+      "arg": {
+        "format": "{}[][]",
+        "snippet": "{${1:arg1}}[${2:opt1}][${3:opt2}]"
+      }
+    },
+    {
+      "name": "qcmquestion",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "qcm",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "remarquebox",
+      "arg": {
+        "format": "[]{}",
+        "snippet": "[${2:opt1}]{${1:arg1}}"
+      }
+    },
+    {
+      "name": "sql",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    },
+    {
+      "name": "terminal",
+      "arg": {
+        "format": "[]",
+        "snippet": "[${1:opt1}]"
+      }
+    }
+  ],
+  "keys": {},
+  "args": []
+}
