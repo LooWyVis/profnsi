@@ -1,3 +1,5 @@
 /.DS_Strore
 install-profnsi.sh
+install-cwl.sh
 /save
+/tests

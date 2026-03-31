@@ -1,5 +1,5 @@
 #Profnsi
-Documentation des commandes — générée le 2025-10-21 14:00
+Documentation des commandes — générée le 2026-03-31 11:35
 
 # Présentation
 
@@ -40,7 +40,7 @@ ecrire votre document
 
 Afficher le sommaire dans le document :
 - non étoilée : active + imprime le sommaire + saute de page
-- étoilée     : active seulement (pas d'impression)
+- étoilée : active seulement (pas d'impression)
 
 **Exemple** :
 
@@ -66,7 +66,7 @@ Pose une addition sous différentes bases
 **Arguments** : `num=1`  
 **Description** :
 
-Représenter une matrice d'adjacence (brute : pas en ecriture mathématique)
+Représenter une matrice d'adjacence (brute : pas en écriture mathématique)
 
 **Exemple** :
 
@@ -97,7 +97,7 @@ Affiche un arbre
 **Exemple** :
 
 ```tex
-\arbre{[A [B] [C [E] [F]] [D]]}, \arbre{[/ [bin] [users [louis] [jean]] [dev] ]}
+\arbre{[A [B] [C [E] [F]] [D]]}, \arbre{[/ [bin] [users [louis] [jean]] [dev]]}
 ```
 
 ## \code
@@ -105,12 +105,25 @@ Affiche un arbre
 **Arguments** : `spec=m m`  
 **Description** :
 
-Code Inline : \codeinline{<langage>}{<code>}
+Code inline : \code{<langage>}{<code>}
 
 **Exemple** :
 
 ```tex
-\codeinline{SQL}{<SELECT * FROM livres;>}
+\code{SQL}{SELECT * FROM livres;}
+```
+
+## \complexite
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Mets en forme un compléxité
+
+**Exemple** :
+
+```tex
+\complexite{111}
 ```
 
 ## \correction
@@ -118,7 +131,7 @@ Code Inline : \codeinline{<langage>}{<code>}
 **Arguments** : `num=1`  
 **Description** :
 
-Correction affiché (en rouge) en mode prof, ignorée en mode élève
+Correction affichée (en rouge) en mode prof, ignorée en mode élève
 
 **Exemple** :
 
@@ -144,12 +157,25 @@ Creer le template du document
 **Arguments** : `num=1`  
 **Description** :
 
-Pose une suite de divisions (conversion) sous différentes bases (conversion dec to bin par defaut)
+Pose une suite de divisions (conversion) sous différentes bases (conversion dec to bin par défaut)
 
 **Exemple** :
 
 ```tex
 \division{128}, \division[3]{98}
+```
+
+## \dossier
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Mets en forme un chemin de dossier
+
+**Exemple** :
+
+```tex
+\dossier{Documents/exercices}
 ```
 
 ## \doublebar
@@ -170,12 +196,25 @@ Pose une suite de divisions (conversion) sous différentes bases (conversion dec
 **Arguments** : `spec=s o m`  
 **Description** :
 
-Creer un exo
+Creer un exercice
 
 **Exemple** :
 
 ```tex
-\exercice{Binaire vers hexadécimal}, 	\exercice*{Exo non numéroté}
+\exercice{Binaire vers hexadécimal}, \exercice*{Exo non numéroté}
+```
+
+## \fichier
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Mets en forme un nom de fichier
+
+**Exemple** :
+
+```tex
+\fichier{Documents/exercices}
 ```
 
 ## \file
@@ -240,7 +279,7 @@ Représenter une matrice d'adjacence
 **Exemple** :
 
 ```tex
-\matrice{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}, \matriceadj[G]{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
+\matrice{0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0}
 ```
 
 ## \matriceadj
@@ -296,16 +335,29 @@ Représenter une pile
 ```
 
 ## \pointilles
-**Type** : `newcommand`  
-**Arguments** : `num=1`  
+**Type** : `NewDocumentCommand`  
+**Arguments** : `spec=O{\linewidth}`  
 **Description** :
 
-Affiche des pointillés pour une certaines largeur
+Affiche des pointillés pour une certaine largeur
 
 **Exemple** :
 
 ```tex
-\pointilles{6}
+\pointilles[6cm]
+```
+
+## \pointillestrou
+**Type** : `NewDocumentCommand`  
+**Arguments** : `spec=m O{\linewidth}`  
+**Description** :
+
+En version prof : affiche le texte ; en version élève : affiche des pointillés
+
+**Exemple** :
+
+```tex
+\pointillestrou{Réponse}[6cm]
 ```
 
 ## \profnsisetup
@@ -326,7 +378,7 @@ Initialiser les paramètres du document
 **Arguments** : `spec=m`  
 **Description** :
 
-choix de réponse dans un QCM
+Choix de réponse dans un QCM
 
 **Exemple** :
 
@@ -339,7 +391,7 @@ choix de réponse dans un QCM
 **Arguments** : `spec=m`  
 **Description** :
 
-choix de réponse dans un QCM qui est la bonne réponse, mis en rouge en mode prof
+Choix de réponse correct, mis en rouge en mode prof
 
 **Exemple** :
 
@@ -348,11 +400,11 @@ choix de réponse dans un QCM qui est la bonne réponse, mis en rouge en mode pr
 ```
 
 ## \qcmfreequestion
-**Type** : `NewDocumentCommand`  
-**Arguments** : `spec=m`  
+**Type** : `NewDocumentEnvironment`  
+**Arguments** : `spec=m O{} O{}`  
 **Description** :
 
-Question ouverte de QCM (avec nombre de lignes de réponse et correction)
+Question ouverte de QCM (avec correction et nombre de lignes)
 
 **Exemple** :
 
@@ -365,7 +417,7 @@ Question ouverte de QCM (avec nombre de lignes de réponse et correction)
 **Arguments** : `spec=m`  
 **Description** :
 
-explications de réponse de QCM (affiché seulement en version prof)
+Explications de réponse de QCM (affichées seulement en version prof)
 
 **Exemple** :
 
@@ -384,6 +436,19 @@ Creer une boite de remarque
 
 ```tex
 \remarque{Contenu}
+```
+
+## \sortie
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Simule une sortie python
+
+**Exemple** :
+
+```tex
+\sortie{111}
 ```
 
 ## \souspartie
@@ -425,15 +490,41 @@ Affiche un tableau
 \tableau{Décimal|Binaire}{4|100 ; 5|101 ; 6|110}, \tableau[.5\linewidth]{Tour|i|compteur}{0|0|0 ;1|1|1 ;10|2|2}
 ```
 
+## \touche
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Mets en forme une touche de clavier
+
+**Exemple** :
+
+```tex
+\touche{Echap}
+```
+
 ## \trou
 **Type** : `newcommand`  
 **Arguments** : `num=2`  
 **Description** :
 
-En version prof : texte normal, En version élève : pointillés occupant l'espace texte
+En version prof : texte normal, en version élève : pointillés occupant l'espace texte
 
 **Exemple** :
 
 ```tex
-\trou{ma phrase a complétée par les élèves}
+\trou{Réponse attendue}{4}
+```
+
+## \variable
+**Type** : `newcommand`  
+**Arguments** : `num=1`  
+**Description** :
+
+Affiche une variable
+
+**Exemple** :
+
+```tex
+\variable{temp}
 ```

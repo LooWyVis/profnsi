@@ -3,7 +3,7 @@
 
 """
 # depuis le dossier contenant profnsi_autodoc.sty
-python3 gen_doc.py profnsi.sty --out-md doc.md
+python3 gen_doc.py ../sty/profnsi.sty --out-md doc.md
 
 Structure du format autodoc
 
