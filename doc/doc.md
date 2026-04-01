@@ -1,5 +1,5 @@
 #Profnsi
-Documentation des commandes — générée le 2026-03-31 11:35
+Documentation des commandes — générée le 2026-04-01 16:53
 
 # Présentation
 
@@ -137,6 +137,19 @@ Correction affichée (en rouge) en mode prof, ignorée en mode élève
 
 ```tex
 \correction{Ma correction}
+```
+
+## \courbecomplexite
+**Type** : `NewDocumentCommand`  
+**Arguments** : `spec=O{} m`  
+**Description** :
+
+Affiche une courbe schématique de complexité dans un repère orthonormé
+
+**Exemple** :
+
+```tex
+\courbecomplexite{n2}, \courbecomplexite[couleur=red,titre=Tri fusion]{nlogn}
 ```
 
 ## \creerDoc
