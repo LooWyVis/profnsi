@@ -152,15 +152,6 @@ Tu peux t’en servir comme “templates” de départ.
 
 * `autocomplete/profnsi.cwl`
 
-### Tests
-
-Le dossier `tests/` contient des documents de test permettant de vérifier la compilation :
-
-* `tests/cours/`
-* `tests/ds/`
-
----
-
 ## Développement
 
 Structure du dépôt :
@@ -170,5 +161,4 @@ autocomplete/  -> fichiers d'autocomplétion
 doc/           -> documentation + script de génération
 exemples/      -> exemples prêts à compiler
 sty/           -> fichiers .sty
-tests/         -> documents de test
 ```
