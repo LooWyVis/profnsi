@@ -779,6 +779,172 @@
 	\textbf{Complexité :} $#1$
 }
 
+% ============================================================
+% Complexités : courbes de croissance (schématiques)
+% ============================================================
+
+\makeatletter
+
+% Clés de configuration
+\pgfkeys{
+  /profnsi/courbecomplexite/.is family,
+  /profnsi/courbecomplexite,
+  taille/.estore in=\profnsi@cc@taille,
+  couleur/.estore in=\profnsi@cc@couleur,
+  titre/.estore in=\profnsi@cc@titre,
+  labelx/.estore in=\profnsi@cc@labelx,
+  labely/.estore in=\profnsi@cc@labely
+}
+
+% Valeurs par défaut
+\def\profnsi@cc@taille{6.5cm}
+\def\profnsi@cc@couleur{blue}
+\def\profnsi@cc@titre{}
+\def\profnsi@cc@labelx{$n$}
+\def\profnsi@cc@labely{coût normalisé}
+
+\def\profnsi@cc@expr{}
+\def\profnsi@cc@legende{}
+
+% Associe un mot-clé à une expression pgfplots
+\newcommand{\profnsi@defcomplexite}[1]{%
+  \IfStrEqCase{#1}{%
+    {1}{%
+      \def\profnsi@cc@expr{0.18}%
+      \def\profnsi@cc@legende{$\mathcal{O}(1)$}%
+    }%
+    {constante}{%
+      \def\profnsi@cc@expr{0.18}%
+      \def\profnsi@cc@legende{$\mathcal{O}(1)$}%
+    }%
+    {log}{%
+      \def\profnsi@cc@expr{ln(1+9*x)/ln(10)}%
+      \def\profnsi@cc@legende{$\mathcal{O}(\log n)$}%
+    }%
+    {logn}{%
+      \def\profnsi@cc@expr{ln(1+9*x)/ln(10)}%
+      \def\profnsi@cc@legende{$\mathcal{O}(\log n)$}%
+    }%
+    {racinen}{%
+      \def\profnsi@cc@expr{sqrt(x)}%
+      \def\profnsi@cc@legende{$\mathcal{O}(\sqrt{n})$}%
+    }%
+    {sqrt}{%
+      \def\profnsi@cc@expr{sqrt(x)}%
+      \def\profnsi@cc@legende{$\mathcal{O}(\sqrt{n})$}%
+    }%
+    {n}{%
+      \def\profnsi@cc@expr{x}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n)$}%
+    }%
+    {lineaire}{%
+      \def\profnsi@cc@expr{x}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n)$}%
+    }%
+    {nlogn}{%
+      \def\profnsi@cc@expr{x*ln(1+9*x)/ln(10)}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n\log n)$}%
+    }%
+    {n2}{%
+      \def\profnsi@cc@expr{x^2}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n^2)$}%
+    }%
+    {quadratique}{%
+      \def\profnsi@cc@expr{x^2}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n^2)$}%
+    }%
+    {n3}{%
+      \def\profnsi@cc@expr{x^3}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n^3)$}%
+    }%
+    {cubique}{%
+      \def\profnsi@cc@expr{x^3}%
+      \def\profnsi@cc@legende{$\mathcal{O}(n^3)$}%
+    }%
+    {2n}{%
+      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
+      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
+    }%
+    {exp}{%
+      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
+      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
+    }%
+    {exponentielle}{%
+      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
+      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
+    }%
+  }[%
+    \PackageError{profnsi}{Complexite inconnue '#1'}%
+    {Valeurs autorisees : 1, constante, log, logn, racinen, sqrt, n, lineaire, nlogn, n2, quadratique, n3, cubique, 2n, exp, exponentielle.}%
+  ]%
+}
+
+\newcommand{\profnsi@tracercourbecomplexite}{%
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\profnsi@cc@taille,
+        height=\profnsi@cc@taille,
+        axis lines=left,
+        axis equal image,
+        xmin=0, xmax=1,
+        ymin=0, ymax=1,
+        xlabel={\profnsi@cc@labelx},
+        ylabel={\profnsi@cc@labely},
+        xtick={0,0.25,0.5,0.75,1},
+        ytick={0,0.25,0.5,0.75,1},
+        grid=both,
+        major grid style={gray!30},
+        minor grid style={gray!15},
+        ticklabel style={font=\small},
+        label style={font=\small},
+        title={\profnsi@cc@titre},
+        samples=200,
+        domain=0:1,
+        enlargelimits=false,
+        clip=false,
+        legend style={
+          at={(0.03,0.97)},
+          anchor=north west,
+          draw=none,
+          fill=white,
+          fill opacity=0.85,
+          text opacity=1,
+          font=\small
+        }
+      ]
+        \addplot[very thick,\profnsi@cc@couleur] {\profnsi@cc@expr};
+        \addlegendentry{\profnsi@cc@legende}
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+}
+
+% --- doc
+% name: \courbecomplexite
+% kind: NewDocumentCommand
+% args:
+%   spec: O{} m
+% description: Affiche une courbe schématique de complexité dans un repère orthonormé
+% example: \courbecomplexite{n2}, \courbecomplexite[couleur=red,titre=Tri fusion]{nlogn}
+% meta:
+%   file: profnsi.sty
+% --- end-doc
+\NewDocumentCommand{\courbecomplexite}{O{} m}{%
+  \pgfkeys{/profnsi/courbecomplexite,
+    taille=6.5cm,
+    couleur=blue,
+    titre=,
+    labelx={$n$},
+    labely={coût normalisé},
+    #1
+  }%
+  \profnsi@defcomplexite{#2}%
+  \profnsi@tracercourbecomplexite
+}
+
+\makeatother
+
 % --- doc
 % name: \fichier
 % kind: newcommand

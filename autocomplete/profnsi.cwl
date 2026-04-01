@@ -28,6 +28,7 @@
 \ceil{%<arg1%>}
 \code{%<arg1%>}{%<arg2%>}
 \complexite{%<arg1%>}
+\courbecomplexite[%<opt1%>]{%<arg1%>}
 \correction{%<arg1%>}
 \creerDoc
 \D

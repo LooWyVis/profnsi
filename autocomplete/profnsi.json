@@ -459,6 +459,13 @@
         "format": "[]",
         "snippet": "[${1:opt1}]"
       }
+    },
+    {
+      "name": "courbecomplexite",
+      "arg": {
+        "format": "[taille=8cm,titre=Tri fusion,couleur=red]",
+        "snippet": "[${1:arg1}]"
+      }
     }
   ],
   "keys": {},
