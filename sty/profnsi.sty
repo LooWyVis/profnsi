@@ -1574,44 +1574,38 @@
 
 \makeatletter
 \newcommand{\profnsi@algolabel}{}
+\newcommand{\profnsi@algotitle}{}
 
-% Environnement perso :
-% \begin{algorithm}[mon-label] ... \caption{...} \end{algorithm}
-\NewDocumentEnvironment{algorithm}{o}{%
+% Utilisation :
+% \begin{algorithm}{Tri par insertion} ... \end{algorithm}
+% ou
+% \begin{algorithm}[algo:tri-insertion]{Tri par insertion} ... \end{algorithm}
+\NewDocumentEnvironment{algorithm}{o m}{%
   \begingroup
   \IfNoValueTF{#1}
     {\def\profnsi@algolabel{}}
     {\def\profnsi@algolabel{#1}}%
-
-  % On mémorise l'ancienne caption
-  \let\profnsi@oldcaption\caption
-
-  % On redéfinit localement \caption pour ajouter automatiquement \label
-  \RenewDocumentCommand{\caption}{som}{%
-    \IfBooleanTF{##1}{%
-      \profnsi@oldcaption*{##3}%
-    }{%
-      \IfNoValueTF{##2}
-        {\profnsi@oldcaption{##3}}
-        {\profnsi@oldcaption[##2]{##3}}%
-      \ifstrempty{\profnsi@algolabel}{}{\label{\profnsi@algolabel}}%
-    }%
-  }%
+  \def\profnsi@algotitle{#2}%
 
   % Autoriser \\ comme fin d’instruction dans l’algo
   \let\profnsi@oldcr\\
   \renewcommand{\\}{\;}%
 
-  % On lance le vrai moteur algorithm2e
+  % Style du titre
+  \NoCaptionOfAlgo
+  \SetAlCapNameSty{textbf}
+
   \begin{algorithm2e}[H]
   \DontPrintSemicolon
   \SetAlgoLined
 }{%
+  \caption{\profnsi@algotitle}%
+  \ifstrempty{\profnsi@algolabel}{}{\label{\profnsi@algolabel}}%
   \end{algorithm2e}
+  \RestoreCaptionOfAlgo
   \endgroup
 }
 \makeatother
-
 % ============================================================
 % Fin du package
 % ============================================================
