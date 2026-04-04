@@ -800,8 +800,8 @@
 \def\profnsi@cc@taille{6.5cm}
 \def\profnsi@cc@couleur{blue}
 \def\profnsi@cc@titre{}
-\def\profnsi@cc@labelx{$n$}
-\def\profnsi@cc@labely{coût normalisé}
+\def\profnsi@cc@labelx{taille de l'entrée}
+\def\profnsi@cc@labely{nombre d'opérations}
 
 \def\profnsi@cc@expr{}
 \def\profnsi@cc@legende{}
@@ -891,11 +891,9 @@
         ymin=0, ymax=1,
         xlabel={\profnsi@cc@labelx},
         ylabel={\profnsi@cc@labely},
-        xtick={0,0.25,0.5,0.75,1},
-        ytick={0,0.25,0.5,0.75,1},
-        grid=both,
-        major grid style={gray!30},
-        minor grid style={gray!15},
+        xtick=\empty,
+        ytick=\empty,
+        grid=none,
         ticklabel style={font=\small},
         label style={font=\small},
         title={\profnsi@cc@titre},
@@ -931,14 +929,7 @@
 %   file: profnsi.sty
 % --- end-doc
 \NewDocumentCommand{\courbecomplexite}{O{} m}{%
-  \pgfkeys{/profnsi/courbecomplexite,
-    taille=6.5cm,
-    couleur=blue,
-    titre=,
-    labelx={$n$},
-    labely={coût normalisé},
-    #1
-  }%
+  \pgfkeys{/profnsi/courbecomplexite,#1}%
   \profnsi@defcomplexite{#2}%
   \profnsi@tracercourbecomplexite
 }
