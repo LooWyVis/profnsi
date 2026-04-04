@@ -1556,6 +1556,62 @@
 }{}
 \makeatother
 
+% ============================
+% Algorithmes
+% ============================
+\RequirePackage[ruled,vlined,linesnumbered,algo2e]{algorithm2e}
+
+% Mots-clés français
+\SetKwInput{Donnees}{Données}
+\SetKwInput{Resultat}{Résultat}
+\SetKwInput{Sortie}{Sortie}
+\SetKw{Retourner}{Retourner}
+
+% Boucles / conditions
+\SetKwFor{Pour}{Pour}{faire}{}
+\SetKwFor{TantQue}{Tant que}{faire}{}
+\SetKwIF{Si}{SinonSi}{Sinon}{Si}{alors}{Sinon si}{Sinon}{}
+
+\makeatletter
+\newcommand{\profnsi@algolabel}{}
+
+% Environnement perso :
+% \begin{algorithm}[mon-label] ... \caption{...} \end{algorithm}
+\NewDocumentEnvironment{algorithm}{o}{%
+  \begingroup
+  \IfNoValueTF{#1}
+    {\def\profnsi@algolabel{}}
+    {\def\profnsi@algolabel{#1}}%
+
+  % On mémorise l'ancienne caption
+  \let\profnsi@oldcaption\caption
+
+  % On redéfinit localement \caption pour ajouter automatiquement \label
+  \RenewDocumentCommand{\caption}{som}{%
+    \IfBooleanTF{##1}{%
+      \profnsi@oldcaption*{##3}%
+    }{%
+      \IfNoValueTF{##2}
+        {\profnsi@oldcaption{##3}}
+        {\profnsi@oldcaption[##2]{##3}}%
+      \ifstrempty{\profnsi@algolabel}{}{\label{\profnsi@algolabel}}%
+    }%
+  }%
+
+  % Autoriser \\ comme fin d’instruction dans l’algo
+  \let\profnsi@oldcr\\
+  \renewcommand{\\}{\;}%
+
+  % On lance le vrai moteur algorithm2e
+  \begin{algorithm2e}[H]
+  \DontPrintSemicolon
+  \SetAlgoLined
+}{%
+  \end{algorithm2e}
+  \endgroup
+}
+\makeatother
+
 % ============================================================
 % Fin du package
 % ============================================================
