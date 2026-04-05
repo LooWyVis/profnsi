@@ -66,7 +66,7 @@
 \partie{%<arg1%>}
 \partie*[%<opt1%>]{%<arg1%>}
 \pile{%<arg1%>}
-\pointilles[%<opt1%>]
+\pointillesvierge[%<opt1%>]
 \pointillestrou{%<arg1%>}[%<opt1%>]
 \prefixepartie
 \profnsi@EvalHeader

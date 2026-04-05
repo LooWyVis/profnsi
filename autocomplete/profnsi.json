@@ -230,10 +230,10 @@
       }
     },
     {
-      "name": "pointilles",
+      "name": "pointillesvierge",
       "arg": {
         "format": "[]",
-        "snippet": "pointilles[${1:opt1}]"
+        "snippet": "pointillesvierge[${1:opt1}]"
       }
     },
     {

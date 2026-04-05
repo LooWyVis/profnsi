@@ -1010,16 +1010,16 @@
 }
 
 % --- doc
-% name: \pointilles
+% name: \pointillesvierge
 % kind: NewDocumentCommand
 % args:
 %   spec: O{\linewidth}
 % description: Affiche des pointillés pour une certaine largeur
-% example: \pointilles[6cm]
+% example: \pointillesvierge[6cm]
 % meta:
 %   file: profnsi.sty
 % --- end-doc
-\NewDocumentCommand{\pointilles}{O{\linewidth}}{%
+\NewDocumentCommand{\pointillesvierge}{O{\linewidth}}{%
   \noindent\makebox[#1]{\dotfill}%
 }
 
