@@ -780,7 +780,8 @@
 }
 
 % ============================================================
-% Complexités : courbes de croissance (schématiques)
+% Complexités : courbes de croissance
+% Axe x fixé globalement à [0,1000]
 % ============================================================
 
 \makeatletter
@@ -803,79 +804,102 @@
 \def\profnsi@cc@labelx{taille de l'entrée}
 \def\profnsi@cc@labely{nombre d'opérations}
 
+% Axe des x : fixé une fois pour toutes
+\def\profnsi@cc@xmin{0}
+\def\profnsi@cc@xmax{1000}
+\def\profnsi@cc@xticks{0,200,400,600,800,1000}
+
+% Réglages variables selon la complexité
 \def\profnsi@cc@expr{}
 \def\profnsi@cc@legende{}
+\def\profnsi@cc@ymin{0}
+\def\profnsi@cc@ymax{10}
+\def\profnsi@cc@domain{0:1000}
+\def\profnsi@cc@yticks{0,2,4,6,8,10}
+
+\newcommand{\profnsi@cc@axes}[4]{%
+  \def\profnsi@cc@ymin{#1}%
+  \def\profnsi@cc@ymax{#2}%
+  \def\profnsi@cc@domain{#3}%
+  \def\profnsi@cc@yticks{#4}%
+}
+
+\newcommand{\profnsi@cc@setconstante}{%
+  \def\profnsi@cc@expr{1}%
+  \def\profnsi@cc@legende{$\mathcal{O}(1)$}%
+  \profnsi@cc@axes{0}{4}{0:1000}{0,1,2,3,4}%
+}
+
+\newcommand{\profnsi@cc@setlog}{%
+  % vraie courbe log_2(x)
+  \def\profnsi@cc@expr{ln(x)/ln(2)}%
+  \def\profnsi@cc@legende{$\mathcal{O}(\log_2 n)$}%
+  \profnsi@cc@axes{0}{10}{1:1000}{0,2,4,6,8,10}%
+}
+
+\newcommand{\profnsi@cc@setsqrt}{%
+  \def\profnsi@cc@expr{sqrt(x)}%
+  \def\profnsi@cc@legende{$\mathcal{O}(\sqrt{n})$}%
+  \profnsi@cc@axes{0}{32}{0:1000}{0,5,10,15,20,25,30}%
+}
+
+\newcommand{\profnsi@cc@setn}{%
+  \def\profnsi@cc@expr{x}%
+  \def\profnsi@cc@legende{$\mathcal{O}(n)$}%
+  \profnsi@cc@axes{0}{1000}{0:1000}{0,200,400,600,800,1000}%
+}
+
+\newcommand{\profnsi@cc@setnlogn}{%
+  \def\profnsi@cc@expr{x*(ln(x)/ln(2))}%
+  \def\profnsi@cc@legende{$\mathcal{O}(n\log_2 n)$}%
+  \profnsi@cc@axes{0}{10000}{1:1000}{0,2000,4000,6000,8000,10000}%
+}
+
+\newcommand{\profnsi@cc@setncarre}{%
+  \def\profnsi@cc@expr{x^2}%
+  \def\profnsi@cc@legende{$\mathcal{O}(n^2)$}%
+  \profnsi@cc@axes{0}{1000000}{0:1000}{0,200000,400000,600000,800000,1000000}%
+}
+
+\newcommand{\profnsi@cc@setncube}{%
+  \def\profnsi@cc@expr{x^3}%
+  \def\profnsi@cc@legende{$\mathcal{O}(n^3)$}%
+  \profnsi@cc@axes{0}{1000000000}{0:1000}{0,200000000,400000000,600000000,800000000,1000000000}%
+}
+
+\newcommand{\profnsi@cc@setexp}{%
+  % Tracé schématique pour rester lisible sur un axe x allant jusqu'à 1000
+  \def\profnsi@cc@expr{(2^(10*x/1000)-1)*1000/1023}%
+  \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
+  \profnsi@cc@axes{0}{1000}{0:1000}{0,200,400,600,800,1000}%
+}
 
 % Associe un mot-clé à une expression pgfplots
 \newcommand{\profnsi@defcomplexite}[1]{%
   \IfStrEqCase{#1}{%
-    {1}{%
-      \def\profnsi@cc@expr{0.18}%
-      \def\profnsi@cc@legende{$\mathcal{O}(1)$}%
-    }%
-    {constante}{%
-      \def\profnsi@cc@expr{0.18}%
-      \def\profnsi@cc@legende{$\mathcal{O}(1)$}%
-    }%
-    {log}{%
-      \def\profnsi@cc@expr{ln(1+9*x)/ln(10)}%
-      \def\profnsi@cc@legende{$\mathcal{O}(\log n)$}%
-    }%
-    {logn}{%
-      \def\profnsi@cc@expr{ln(1+9*x)/ln(10)}%
-      \def\profnsi@cc@legende{$\mathcal{O}(\log n)$}%
-    }%
-    {racinen}{%
-      \def\profnsi@cc@expr{sqrt(x)}%
-      \def\profnsi@cc@legende{$\mathcal{O}(\sqrt{n})$}%
-    }%
-    {sqrt}{%
-      \def\profnsi@cc@expr{sqrt(x)}%
-      \def\profnsi@cc@legende{$\mathcal{O}(\sqrt{n})$}%
-    }%
-    {n}{%
-      \def\profnsi@cc@expr{x}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n)$}%
-    }%
-    {lineaire}{%
-      \def\profnsi@cc@expr{x}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n)$}%
-    }%
-    {nlogn}{%
-      \def\profnsi@cc@expr{x*ln(1+9*x)/ln(10)}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n\log n)$}%
-    }%
-    {n2}{%
-      \def\profnsi@cc@expr{x^2}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n^2)$}%
-    }%
-    {quadratique}{%
-      \def\profnsi@cc@expr{x^2}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n^2)$}%
-    }%
-    {n3}{%
-      \def\profnsi@cc@expr{x^3}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n^3)$}%
-    }%
-    {cubique}{%
-      \def\profnsi@cc@expr{x^3}%
-      \def\profnsi@cc@legende{$\mathcal{O}(n^3)$}%
-    }%
-    {2n}{%
-      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
-      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
-    }%
-    {exp}{%
-      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
-      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
-    }%
-    {exponentielle}{%
-      \def\profnsi@cc@expr{(2^(4*x)-1)/15}%
-      \def\profnsi@cc@legende{$\mathcal{O}(2^n)$}%
-    }%
+    {1}{\profnsi@cc@setconstante}%
+    {constante}{\profnsi@cc@setconstante}%
+    {log}{\profnsi@cc@setlog}%
+    {log2}{\profnsi@cc@setlog}%
+    {logn}{\profnsi@cc@setlog}%
+    {dichotomie}{\profnsi@cc@setlog}%
+    {binaire}{\profnsi@cc@setlog}%
+    {racinen}{\profnsi@cc@setsqrt}%
+    {sqrt}{\profnsi@cc@setsqrt}%
+    {n}{\profnsi@cc@setn}%
+    {lineaire}{\profnsi@cc@setn}%
+    {nlogn}{\profnsi@cc@setnlogn}%
+    {linearithmique}{\profnsi@cc@setnlogn}%
+    {n2}{\profnsi@cc@setncarre}%
+    {quadratique}{\profnsi@cc@setncarre}%
+    {n3}{\profnsi@cc@setncube}%
+    {cubique}{\profnsi@cc@setncube}%
+    {2n}{\profnsi@cc@setexp}%
+    {exp}{\profnsi@cc@setexp}%
+    {exponentielle}{\profnsi@cc@setexp}%
   }[%
     \PackageError{profnsi}{Complexite inconnue '#1'}%
-    {Valeurs autorisees : 1, constante, log, logn, racinen, sqrt, n, lineaire, nlogn, n2, quadratique, n3, cubique, 2n, exp, exponentielle.}%
+    {Valeurs autorisees : 1, constante, log, log2, logn, dichotomie, binaire, racinen, sqrt, n, lineaire, nlogn, linearithmique, n2, quadratique, n3, cubique, 2n, exp, exponentielle.}%
   ]%
 }
 
@@ -886,19 +910,18 @@
         width=\profnsi@cc@taille,
         height=\profnsi@cc@taille,
         axis lines=left,
-        axis equal image,
-        xmin=0, xmax=1,
-        ymin=0, ymax=1,
+        xmin=\profnsi@cc@xmin, xmax=\profnsi@cc@xmax,
+        ymin=\profnsi@cc@ymin, ymax=\profnsi@cc@ymax,
         xlabel={\profnsi@cc@labelx},
         ylabel={\profnsi@cc@labely},
-        xtick=\empty,
-        ytick=\empty,
-        grid=none,
+        xtick={\profnsi@cc@xticks},
+        ytick={\profnsi@cc@yticks},
+        grid=major,
         ticklabel style={font=\small},
         label style={font=\small},
         title={\profnsi@cc@titre},
         samples=200,
-        domain=0:1,
+        domain=\profnsi@cc@domain,
         enlargelimits=false,
         clip=false,
         legend style={
@@ -918,16 +941,6 @@
   \end{center}
 }
 
-% --- doc
-% name: \courbecomplexite
-% kind: NewDocumentCommand
-% args:
-%   spec: O{} m
-% description: Affiche une courbe schématique de complexité dans un repère orthonormé
-% example: \courbecomplexite{n2}, \courbecomplexite[couleur=red,titre=Tri fusion]{nlogn}
-% meta:
-%   file: profnsi.sty
-% --- end-doc
 \NewDocumentCommand{\courbecomplexite}{O{} m}{%
   \pgfkeys{/profnsi/courbecomplexite,#1}%
   \profnsi@defcomplexite{#2}%
