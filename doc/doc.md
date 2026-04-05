@@ -347,7 +347,7 @@ Représenter une pile
 \pile{[2, 4, 3, 9, 5]}
 ```
 
-## \pointilles
+## \pointillesvierges
 **Type** : `NewDocumentCommand`  
 **Arguments** : `spec=O{\linewidth}`  
 **Description** :
@@ -357,7 +357,7 @@ Affiche des pointillés pour une certaine largeur
 **Exemple** :
 
 ```tex
-\pointilles[6cm]
+\pointillesvierges[6cm]
 ```
 
 ## \pointillestrou
@@ -451,7 +451,7 @@ Creer une boite de remarque
 \remarque{Contenu}
 ```
 
-## \sortie
+## \console
 **Type** : `newcommand`  
 **Arguments** : `num=1`  
 **Description** :
@@ -461,7 +461,7 @@ Simule une sortie python
 **Exemple** :
 
 ```tex
-\sortie{111}
+\console{111}
 ```
 
 ## \souspartie

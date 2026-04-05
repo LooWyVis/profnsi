@@ -230,10 +230,10 @@
       }
     },
     {
-      "name": "pointillesvierge",
+      "name": "pointillesvierges",
       "arg": {
         "format": "[]",
-        "snippet": "pointillesvierge[${1:opt1}]"
+        "snippet": "pointillesvierges[${1:opt1}]"
       }
     },
     {
@@ -297,10 +297,10 @@
       "name": "Rps"
     },
     {
-      "name": "sortie",
+      "name": "console",
       "arg": {
         "format": "{}",
-        "snippet": "sortie{${1:arg1}}"
+        "snippet": "console{${1:arg1}}"
       }
     },
     {

@@ -66,7 +66,7 @@
 \partie{%<arg1%>}
 \partie*[%<opt1%>]{%<arg1%>}
 \pile{%<arg1%>}
-\pointillesvierge[%<opt1%>]
+\pointillesvierges[%<opt1%>]
 \pointillestrou{%<arg1%>}[%<opt1%>]
 \prefixepartie
 \profnsi@EvalHeader
@@ -83,7 +83,7 @@
 \Rm
 \Rp
 \Rps
-\sortie{%<arg1%>}
+\console{%<arg1%>}
 \souspartie{%<arg1%>}
 \souspartie*[%<opt1%>]{%<arg1%>}
 \soustraction[%<opt1%>]{%<arg1%>}{%<arg2%>}
